@@ -1,0 +1,73 @@
+{
+    "name": "InMobi",
+    "description": "InMobi enables consumers to discover new products and services by providing contextual and personalized ad experiences on mobile devices.",
+    "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/1019-inmobi.jpg",
+    "tags": [
+        "api not found",
+        "have api",
+        "telecommunications"
+    ],
+    "created": "2019-12-19",
+    "modified": "2019-12-19",
+    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/inmobi\/master\/apis.json",
+    "specificationVersion": "0.14",
+    "apis": [
+        {
+            "name": "InMobi",
+            "description": null,
+            "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/1019-inmobi.jpg",
+            "humanURL": "http:\/\/developer.inmobi.com\/wiki\/index.php?title=API",
+            "baseURL": "",
+            "tags": [],
+            "properties": [
+                {
+                    "type": "x-openapi",
+                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/inmobi-openapi.json"
+                }
+            ]
+        }
+    ],
+    "include": [],
+    "x-common": [
+        {
+            "type": "Blog",
+            "url": "http:\/\/inmobi.com\/inmobiblog\/"
+        },
+        {
+            "type": "Blog RSS",
+            "url": "http:\/\/www.inmobi.com\/rss\/blog\/"
+        },
+        {
+            "type": "Crunchbase",
+            "url": "https:\/\/crunchbase.com\/organization\/inmobi"
+        },
+        {
+            "type": "Crunchbase",
+            "url": "http:\/\/www.crunchbase.com\/company\/inmobi"
+        },
+        {
+            "type": "Email",
+            "url": "privacy@inmobi.com"
+        },
+        {
+            "type": "Email",
+            "url": "legal@inmobi.com"
+        },
+        {
+            "type": "Email",
+            "url": "finance_payments@inmobi.com"
+        },
+        {
+            "type": "Github",
+            "url": "https:\/\/github.com\/InMobi"
+        },
+        {
+            "type": "Twitter",
+            "url": "https:\/\/twitter.com\/inmobi"
+        },
+        {
+            "type": "Website",
+            "url": "http:\/\/developer.inmobi.com\/wiki\/index.php?title=API"
+        }
+    ]
+}
