@@ -1,0 +1,25 @@
+generated: '2026-07-19'
+method: searched
+probe: true
+source: https://www.inmobi.com/trust-center/
+url: https://www.inmobi.com/trust-center/
+certifications:
+- GDPR
+- CCPA
+- TAG Certified Against Fraud
+- IAB Tech Lab
+- MMA
+evidence:
+- source: https://www.inmobi.com/trust-center/
+  keywords:
+  - trust center
+  - gdpr
+  - ccpa
+  - tag
+  - iab tech lab
+  - mma
+notes: >-
+  InMobi's Trust Center highlights ad-industry accreditations (TAG, IAB Tech
+  Lab, MMA) and third-party measurement partnerships (Adjust, AppsFlyer,
+  Kochava). It references GDPR and CCPA data-protection compliance. No SOC 2 /
+  ISO 27001 / PCI DSS certifications are publicly named on the Trust Center page.

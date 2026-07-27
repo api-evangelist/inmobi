@@ -1,0 +1,33 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://support.inmobi.com/advertise ,
+  https://support.inmobi.com/choice/implementation-guide/ios-implementation ,
+  https://www.inmobi.com/trust-center/
+notes: >-
+  InMobi has no public REST OpenAPI to derive standards from; these conformance
+  assertions are drawn from its documented ad-tech surface. InMobi Exchange is an
+  OpenRTB exchange for DSPs, and InMobi Choice is an IAB TCF v2 consent management
+  platform.
+standards:
+- id: openrtb
+  conforms: true
+  evidence: InMobi Exchange documents OpenRTB bidding integration for DSPs (support.inmobi.com/advertise)
+- id: iab-tcf-v2
+  conforms: true
+  evidence: InMobi Choice is a registered IAB Transparency & Consent Framework (TCF) CMP
+- id: iab-us-privacy-ccpa
+  conforms: true
+  evidence: InMobi Choice supports the IAB US Privacy (CCPA) signal; Trust Center references CCPA
+- id: gdpr
+  conforms: true
+  evidence: Trust Center references GDPR data-protection compliance and consent management
+- id: tag-certified-against-fraud
+  conforms: true
+  evidence: Trust Center displays TAG (Trustworthy Accountability Group) certification
+- id: oauth2
+  conforms: false
+  evidence: no public OAuth2 API surface documented
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: no public REST error contract published

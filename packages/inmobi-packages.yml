@@ -1,0 +1,40 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://support.inmobi.com/monetize/android-guidelines/ ,
+  https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads ,
+  https://cocoapods.org/pods/InMobiSDK ,
+  https://github.com/InMobi/InMobiSDK-Swift-Package
+notes: >-
+  InMobi distributes native mobile ad SDKs rather than a public REST API client
+  library. The Android SDK ships on Maven Central; the iOS SDK ships on CocoaPods
+  and Swift Package Manager. There is no first-party JavaScript/Python/Go client
+  because InMobi's server surface is OpenRTB (InMobi Exchange) and dashboard-based.
+packages:
+- language: kotlin
+  registry: maven
+  name: com.inmobi.monetization:inmobi-ads-kotlin
+  version: 11.4.0
+  url: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads-kotlin
+  install: "implementation 'com.inmobi.monetization:inmobi-ads-kotlin:11.4.0'"
+  official: true
+- language: java
+  registry: maven
+  name: com.inmobi.monetization:inmobi-ads
+  version: 10.1.4
+  url: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads
+  install: "implementation 'com.inmobi.monetization:inmobi-ads:10.1.4'"
+  official: true
+- language: swift
+  registry: cocoapods
+  name: InMobiSDK
+  version: 11.4.0
+  url: https://cocoapods.org/pods/InMobiSDK
+  install: "pod 'InMobiSDK', '~> 11.4'"
+  official: true
+- language: swift
+  registry: swift-package-manager
+  name: InMobiSDK-Swift-Package
+  url: https://github.com/InMobi/InMobiSDK-Swift-Package
+  install: "https://github.com/InMobi/InMobiSDK-Swift-Package.git"
+  official: true

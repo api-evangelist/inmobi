@@ -1,0 +1,33 @@
+# InMobi
+
+> InMobi is a global advertising technology and mobile marketing platform headquartered in Bengaluru, India, and backed by SoftBank Vision Fund. It connects brands and consumers across mobile apps and the open web through advertising, monetization, a programmatic OpenRTB exchange, a demand-side platform, and an IAB TCF consent management platform. InMobi exposes native mobile ad SDKs (Android, iOS) rather than a public REST API.
+
+## Products
+- [InMobi Advertising](https://advertising.inmobi.com/): Brand building, app growth, and ad monetization for media buyers and owners.
+- [InMobi Exchange](https://support.inmobi.com/advertise): Programmatic ad exchange with OpenRTB bidding for demand-side platforms.
+- [InMobi DSP](https://support.inmobi.com/dsp): Performance-marketing demand-side platform with onboarding, integrations, and reporting.
+- [InMobi Choice](https://support.inmobi.com/choice/implementation-guide/ios-implementation): IAB TCF v2 consent management platform (CMP).
+- [Glance](https://glance.com/): Consumer intelligent shopping / lock-screen experience.
+- [1Weather](https://www.1weatherapp.com/brand/): Consumer weather application.
+
+## Developer
+- [Support / Developer Center](https://support.inmobi.com/): Documentation hub for monetization, exchange, DSP, and CMP.
+- [Android SDK Integration](https://support.inmobi.com/monetize/android-guidelines/): Maven Central `com.inmobi.monetization:inmobi-ads-kotlin`.
+- [GitHub Organization](https://github.com/InMobi): Sample code and SDK packages (Android, iOS, Swift).
+- [InMobi Now](https://support.inmobi.com/inmobi-now): SDK releases and feature-launch feed (changelog).
+
+## SDKs
+- [Android SDK on Maven Central](https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads-kotlin): `com.inmobi.monetization:inmobi-ads-kotlin:11.4.0`.
+- [iOS SDK on CocoaPods](https://cocoapods.org/pods/InMobiSDK): `pod 'InMobiSDK', '~> 11.4'`.
+- [iOS Swift Package](https://github.com/InMobi/InMobiSDK-Swift-Package): Swift Package Manager distribution.
+
+## Standards & Compliance
+- [Trust Center](https://www.inmobi.com/trust-center/): TAG Certified Against Fraud, IAB Tech Lab, MMA; GDPR and CCPA compliance.
+- [Security](https://www.inmobi.com/security/): Security posture overview.
+- [Privacy Policy](https://www.inmobi.com/website-privacy-policy/)
+
+## Repo artifacts
+- [Packages / SDKs](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/packages/inmobi-packages.yml)
+- [Conformance](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/conformance/inmobi-conformance.yml)
+- [Trust Center](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/security/inmobi-trust-center.yml)
+- [Domain Security](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/security/inmobi-domain-security.yml)

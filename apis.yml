@@ -1,8 +1,16 @@
 aid: inmobi
 name: InMobi
-description: 'InMobi is a company surfaced as a portfolio company of softbank-vision-fund and added to
-  the API Evangelist network as a stub for enrichment. Sector: enterprise. This profile is a lead awaiting
-  the enrichment pipeline.'
+description: 'InMobi is a global advertising technology and mobile marketing platform
+  headquartered in Bengaluru, India, and backed by SoftBank Vision Fund. It positions
+  itself as the intelligence layer of the consumer internet, connecting brands and
+  consumers across mobile apps and the open web. InMobi''s enterprise platforms include
+  InMobi Advertising for brand building, app growth and ad monetization; the InMobi
+  Exchange, a programmatic OpenRTB ad exchange for demand-side platforms; InMobi DSP
+  performance solutions; and InMobi Choice, an IAB TCF-certified consent management
+  platform (CMP). InMobi ships native mobile ad SDKs for Android (Maven Central) and
+  iOS (CocoaPods and Swift Package Manager) rather than a public REST API, and integrates
+  with mediation platforms such as AppLovin MAX, Google Mobile Ads, and IronSource.
+  Consumer brands include Glance and the 1Weather app.'
 url: https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -10,15 +18,78 @@ x-backed-by:
 - softbank-vision-fund
 x-tier: stub
 x-tier-reason: portfolio-lead
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://github.com/InMobi.png
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
 - Enterprise
+- Advertising
+- AdTech
+- Mobile
+- Monetization
+- Programmatic
+- OpenRTB
+- SDK
+- Consent Management
+- DSP
 apis: []
+common:
+- type: TrustCenter
+  url: security/inmobi-trust-center.yml
+- type: DomainSecurity
+  url: security/inmobi-domain-security.yml
+- type: Website
+  url: https://www.inmobi.com/
+- type: DeveloperPortal
+  url: https://support.inmobi.com/
+- type: Documentation
+  url: https://support.inmobi.com/monetize
+- type: APIReference
+  url: https://support.inmobi.com/advertise
+- type: GettingStarted
+  url: https://support.inmobi.com/monetize
+- type: Support
+  url: https://support.inmobi.com/
+- type: GitHubOrganization
+  url: https://github.com/InMobi
+- type: ChangeLog
+  url: https://support.inmobi.com/inmobi-now
+- type: PrivacyPolicy
+  url: https://www.inmobi.com/website-privacy-policy/
+- type: Login
+  url: https://publisher.inmobi.com/
+- type: Compliance
+  url: https://www.inmobi.com/trust-center/
+- type: Security
+  url: https://www.inmobi.com/security/
+- type: Packages
+  url: packages/inmobi-packages.yml
+- type: SDKs
+  url: packages/inmobi-packages.yml
+- type: Conformance
+  url: conformance/inmobi-conformance.yml
+- type: LLMsTxt
+  url: llms/inmobi-llms.txt
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
