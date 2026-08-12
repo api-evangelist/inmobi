@@ -1,0 +1,128 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/api-details ,
+  https://support.inmobi.com/monetize/inmobi-apis/reporting-api ,
+  https://support.inmobi.com/dsp/global/inmobi-dsp-global/reporting-for-inmobi-dsp-global/cost-api-integration-for-inmobi-dsp
+notes: >-
+  InMobi publishes no OpenAPI, so there are no $ref links to walk. This entity
+  graph is read directly from the published request/response field tables of the
+  Ad Management API and the dimension/filter vocabulary of the Reporting API.
+  Only fields InMobi actually documents appear below; no field is inferred.
+derived_from: provider API reference pages (no machine-readable schema published)
+entity_count: 6
+relationship_count: 6
+
+entities:
+- name: Account
+  api: all
+  id_field: accountId
+  id_type: string
+  aliases: [x-account-id, accountId, account]
+  description: >-
+    The InMobi publisher or DSP account. Carried as a header on every Ad
+    Management and Reporting call; found under Payment Settings on the Finance
+    tab of the InMobi platform.
+  fields:
+  - {name: accountId, type: string, source: header}
+  - {name: userName, type: string, description: account email address, source: header}
+  note: The Reporting API can group by `account` to break results out across sub-accounts.
+
+- name: App
+  api: ad-management
+  endpoint: /rest/api/v2/apps
+  id_field: appId
+  id_type: integer
+  aliases: [inmobiAppId, appId]
+  fields:
+  - {name: appId, type: integer, readOnly: true}
+  - {name: appName, type: string, writable: true}
+  - {name: storeUrl, type: string, writable: true, note: required on create}
+  - {name: childDirected, type: integer, enum: [1, 2, 3], writable: true, note: COPPA child-directed treatment}
+  - {name: locationAccess, type: boolean, writable: true}
+  - {name: status, type: string, enum: [ACTIVE, DRAFT, ARCHIVE, FLAGGED], default: ACTIVE, filterable: true}
+  operations: [list, get, create, update]
+  methods: {list: GET, get: GET, create: POST, update: PATCH}
+
+- name: Placement
+  api: ad-management
+  endpoint: /rest/api/v1/placements
+  id_field: placementId
+  id_type: integer
+  fields:
+  - {name: placementId, type: integer, readOnly: true}
+  - {name: appId, type: integer, writable: 'on create only', note: required query param on list}
+  - {name: placementName, type: string, writable: true}
+  - {name: placementType, type: string, enum: [INTERSTITIAL, BANNER, REWARDED_VIDEO, NATIVE], writable: true, filterable: true}
+  - {name: cpmFloor, type: number, writable: true}
+  - {name: isAudienceBiddingEnabled, type: boolean, writable: true}
+  - {name: audienceBiddingPartner, type: string, writable: true}
+  - {name: a9TagId, type: string, writable: true, note: Amazon A9 / TAM audience-bidding tag}
+  - {name: a9AppId, type: string, writable: true, note: Amazon A9 / TAM audience-bidding app id}
+  operations: [list, get, create, update]
+  methods: {list: GET, get: GET, create: POST, update: PATCH}
+
+- name: ReportRequest
+  api: publisher-reporting
+  endpoint: /v3.0/reporting/publisher
+  description: The request envelope for a publisher performance report.
+  fields:
+  - {name: metrics, type: array<string>, enum: [adRequests, adImpressions, clicks, earnings, servedImpressions, costPerMille, fillRate]}
+  - {name: timeFrame, type: string, format: 'yyyy-MM-dd:yyyy-MM-dd'}
+  - {name: groupBy, type: array<string>, enum: [country, requestSlot, platform, date, account, inmobiAppId, placement, adUnitType, integrationDirect, requestBundleId]}
+  - {name: filterBy, type: array<object>}
+  - {name: offset, type: integer, default: 0}
+  - {name: length, type: integer, max: 5000}
+  - {name: orderBy, type: array<string>}
+  - {name: orderType, type: string, enum: [asc, desc]}
+
+- name: ReportRow
+  api: publisher-reporting
+  description: A single row of the respList[] array — one aggregation bucket of the requested groupBy dimensions with the requested metrics attached.
+  dimensions: [country, requestSlot, platform, date, account, inmobiAppId, placement, adUnitType, integrationDirect, requestBundleId]
+  measures: [adRequests, adImpressions, clicks, earnings, servedImpressions, costPerMille, fillRate]
+  derived_measures:
+  - {name: costPerMille, formula: total earnings / (total impressions x 1000), label: eCPM}
+  - {name: CTR, formula: total clicks / total impressions}
+  - {name: fillRate, formula: successful impressions / total requests}
+
+- name: CostReport
+  api: dsp-cost
+  endpoint: /api/v3/reports/{network|programmatic|skan}
+  description: An asynchronous DSP spend report — created, polled for status, then downloaded.
+  fields:
+  - {name: reportID, type: string, readOnly: true}
+  - {name: startDate, type: string, format: 'YYYY-MM-DD', required: true}
+  - {name: endDate, type: string, format: 'YYYY-MM-DD', required: true}
+  - {name: dimensions, type: array<string>}
+  - {name: measures, type: array<string>}
+  - {name: filters, type: array}
+  lifecycle:
+  - 'create: POST /reports/{type}'
+  - 'poll: GET /reports/{reportID}/status'
+  - 'download: GET /reports/{reportID}/download'
+  retention: last 90 days only
+
+relationships:
+- {from: Account, to: App, type: has_many, via: accountId (header scope)}
+- {from: App, to: Placement, type: has_many, via: appId}
+- {from: Placement, to: App, type: belongs_to, via: appId}
+- {from: ReportRow, to: App, type: belongs_to, via: inmobiAppId, note: group/filter dimension, not a $ref}
+- {from: ReportRow, to: Placement, type: belongs_to, via: placementId, note: group/filter dimension, not a $ref}
+- {from: Account, to: CostReport, type: has_many, via: bearer token scope}
+
+id_conventions:
+  prefixed_ids: false
+  note: >-
+    InMobi uses bare integer identifiers (appId, placementId) with no type
+    prefix, so an identifier carries no self-describing type information — a
+    client cannot tell an appId from a placementId by inspection. The Reporting
+    API refers to the same entity by a different field name (inmobiAppId) than
+    the Ad Management API (appId), which is the clearest single symptom of the
+    two APIs having been designed apart.
+
+gaps:
+- no OpenAPI or JSON Schema published, so none of the above is machine-verifiable
+- no documented delete/archive operation on App or Placement via the API (status ARCHIVE is a filter value on list, not a documented write)
+- no total-count or cursor field on any collection response
+- no shared identifier vocabulary between the Reporting and Ad Management APIs

@@ -1,0 +1,177 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://support.inmobi.com/monetize/inmobi-apis/reporting-api ,
+  https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/api-details ,
+  https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/authentication-and-request-protocol ,
+  https://support.inmobi.com/dsp/global/inmobi-dsp-global/reporting-for-inmobi-dsp-global/cost-api-integration-for-inmobi-dsp ,
+  https://support.inmobi.com/monetize/ortb-integrations/bid-request-overview ,
+  live probes of every host (2026-08-12)
+notes: >-
+  InMobi does not publish a cross-cutting API design guide. What follows is
+  assembled from the three separate REST references plus observed responses.
+  The honest headline: these are three independently designed APIs on three
+  hosts with three auth schemes, three error envelopes, three versioning
+  schemes and no shared conventions layer. An agent cannot carry one client
+  across them.
+
+cross_cutting_consistency:
+  shared_auth_model: false
+  shared_error_envelope: false
+  shared_versioning_scheme: false
+  shared_pagination_model: false
+  shared_host: false
+  assessment: >-
+    Zero of five cross-cutting conventions hold across InMobi's REST surface.
+
+auth:
+  style: custom headers per API (no OAuth 2.0, no OIDC, no scopes)
+  see: authentication/inmobi-authentication.yml
+  transport: https only
+  summary:
+  - api: Publisher Reporting API 3.0
+    headers: [userName, secretKey, accountId, sessionId]
+    session: 8h token from POST /v1.0/generatesession/generate, max 15 per 8h
+  - api: Ad Management API
+    headers: [x-client-secret, x-account-id, x-client-id]
+    session: none (static credential triplet on every request)
+  - api: DSP Cost API
+    headers: [Authorization]
+    session: 8h token from POST /api/v3/auth/token (clientId + clientSecret)
+
+idempotency:
+  supported: false
+  header: null
+  scope: null
+  retention: null
+  note: >-
+    InMobi documents no idempotency key on any surface. The Ad Management API
+    exposes POST (create app / create placement) and PATCH (update) with no
+    replay-protection mechanism, so a retried create can duplicate inventory.
+    This is the largest single design gap on the write surface.
+
+pagination:
+  models: 2
+  by_api:
+  - api: Publisher Reporting API 3.0
+    style: offset + length, in the JSON request body
+    params:
+      offset: integer, starts at 0; on each subsequent call must equal (previous offset + previous length)
+      length: integer, max 5000
+    required_with_pagination: [orderBy, orderType]
+    order_by_fields: [clicks, adImpressions, servedImpressions, costPerMille, fillRate, adRequests, earnings, country, platform, date, requestSlot, inmobiAppId, placement]
+    order_type: [asc, desc]
+    response_total: not documented
+  - api: Ad Management API
+    style: page number + page size, as query parameters
+    params:
+      pageNum: integer
+      pageLength: integer, default 10
+    response_total: not documented
+  gap: >-
+    Neither API documents a total-count or next-cursor field, so a client
+    cannot know when it has reached the last page without an empty-result probe.
+
+filtering_and_grouping:
+  api: Publisher Reporting API 3.0
+  group_by: [country, requestSlot, platform, date, account, inmobiAppId, placement, adUnitType, integrationDirect, requestBundleId]
+  filter_by:
+  - {field: country, type: String, comparators: ['=']}
+  - {field: inmobiAppId, type: Long, comparators: ['=', 'IN']}
+  - {field: inmobiAppName, type: String, comparators: ['=']}
+  - {field: placementId, type: Long, comparators: ['=']}
+  - {field: placementName, type: String, comparators: ['=']}
+  - {field: platform, type: String, comparators: ['=', 'IN'], values: [IOS, ANDROID]}
+  - {field: earnings, type: Long, comparators: ['>', '<', '=', '>=', '<=']}
+  - {field: adImpressions, type: Long, comparators: ['>', '<', '=', '>=', '<=']}
+  - {field: adUnitType, type: String, comparators: ['=', 'IN']}
+  metrics: [adRequests, adImpressions, clicks, earnings, servedImpressions, costPerMille, fillRate]
+  time_frame: 'yyyy-MM-dd:yyyy-MM-dd (end date may not be after today — error 2036)'
+
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+  note: The Reporting API's metrics[] array is the closest analogue — the caller selects which measures to return.
+metadata_fields:
+  supported: false
+
+request_id_tracing:
+  supported: partial
+  note: >-
+    api.inmobi.com and publisher.inmobi.com return a `request-context` response
+    header (an Azure Application Insights appId, e.g.
+    `appId=cid-v1:a1e20f11-8365-4571-b876-e27f74e4a2be`). It is a platform
+    artifact, not a documented per-request correlation ID, and InMobi documents
+    no X-Request-Id to quote back to support.
+
+versioning:
+  style: path-segment version, but the scheme differs per API
+  schemes:
+  - api: Publisher Reporting API
+    pattern: /v{major}.{minor}/ — e.g. /v3.0/reporting/publisher; session at /v1.0/generatesession/generate
+  - api: Ad Management API
+    pattern: /rest/api/v{n}/ — mixed within one API (apps at /v2/, placements at /v1/)
+  - api: DSP Cost API
+    pattern: /api/v{n}/ — /api/v3
+  - api: Server-to-Server Ad Request API
+    pattern: /showad/v{major}.{minor} — /showad/v3.1
+  header_versioning: false
+  media_type_versioning: false
+  note: >-
+    The Ad Management API mixes v1 and v2 resources under one product, which
+    means a client must pin two versions to use one API.
+
+error_envelope:
+  shared: false
+  rfc9457: false
+  see: errors/inmobi-problem-types.yml
+
+rate_limit_signaling:
+  supported: true
+  style: IETF draft ratelimit-headers (ratelimit-policy / ratelimit-limit / ratelimit-remaining / ratelimit-reset)
+  retry_after: false
+  see: rate-limits/inmobi-rate-limits.yml
+
+content_negotiation:
+  request: application/json
+  response: application/json
+  compression:
+    supported: true
+    note: >-
+      Accept-Encoding: gzip is honoured on the Reporting API. The OpenRTB
+      exchange documents gzip on both bid requests (content-encoding) and bid
+      responses (accept-encoding).
+  csv_output: The Reporting API is documented as also supporting CSV output for inventory performance data.
+
+cors:
+  observed: true
+  note: 'api.inmobi.com returns access-control-allow-origin: * and access-control-allow-methods: GET, POST, PUT, PATCH, DELETE'
+
+security_headers:
+  observed_on: [api.inmobi.com, publisher.inmobi.com, api.cdr.inmobi.com]
+  headers:
+    strict-transport-security: 'max-age=15552000; includeSubDomains (31536000 on api.cdr.inmobi.com)'
+    x-content-type-options: nosniff
+    x-frame-options: SAMEORIGIN
+    x-xss-protection: 1; mode=block
+    x-dns-prefetch-control: 'off'
+    x-download-options: noopen
+  note: >-
+    The API hosts carry HSTS even though www.inmobi.com does not — see
+    security/inmobi-domain-security.yml.
+
+edge_behaviour:
+  note: >-
+    Unrouted paths on api.inmobi.com return HTTP 302 to
+    https://dummy.blacklisted.host/<path> rather than a 404. This is a
+    deliberate edge blackhole; it means a discovery client probing
+    /openapi.json, /swagger.json or /.well-known/* gets a redirect, not an
+    honest 404, which defeats automated contract discovery.
+
+cross_links:
+  errors: errors/inmobi-problem-types.yml
+  lifecycle: lifecycle/inmobi-lifecycle.yml
+  authentication: authentication/inmobi-authentication.yml
+  rate_limits: rate-limits/inmobi-rate-limits.yml
+  data_model: data-model/inmobi-data-model.yml

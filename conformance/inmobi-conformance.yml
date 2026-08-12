@@ -1,33 +1,125 @@
-generated: '2026-07-19'
+generated: '2026-08-12'
 method: searched
 source: >-
-  https://support.inmobi.com/advertise ,
+  https://support.inmobi.com/monetize/ortb-integrations/bid-request-overview ,
+  https://support.inmobi.com/monetize/inmobi-apis/reporting-api ,
+  https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/api-details ,
   https://support.inmobi.com/choice/implementation-guide/ios-implementation ,
-  https://www.inmobi.com/trust-center/
+  https://www.inmobi.com/trust-center/ ,
+  live probes of every InMobi API host (2026-08-12)
 notes: >-
-  InMobi has no public REST OpenAPI to derive standards from; these conformance
-  assertions are drawn from its documented ad-tech surface. InMobi Exchange is an
-  OpenRTB exchange for DSPs, and InMobi Choice is an IAB TCF v2 consent management
-  platform.
+  Updated 2026-08-12. The previous round asserted "InMobi has no public REST
+  OpenAPI to derive standards from" — the first half of that is still true (no
+  OpenAPI is published anywhere) but InMobi does operate four documented,
+  live REST APIs, so the REST-side conformance assertions below are now drawn
+  from the real contracts rather than left blank. InMobi's standards posture is
+  strong on the AD-TECH side (OpenRTB 2.5, IAB TCF, US Privacy, TAG) and weak on
+  the WEB-API side (no OpenAPI, no OAuth, no RFC 9457, no RFC 8594).
 standards:
+# --- ad-tech / industry standards: InMobi's strength ---
 - id: openrtb
+  version: '2.5'
   conforms: true
-  evidence: InMobi Exchange documents OpenRTB bidding integration for DSPs (support.inmobi.com/advertise)
-- id: iab-tcf-v2
+  evidence: >-
+    InMobi Exchange implements the IAB OpenRTB 2.5 protocol for DSP bidding
+    (support.inmobi.com/monetize/ortb-integrations/bid-request-overview);
+    InMobi publishes its own delta document, "InMobi Open RTB 2.5 Specification
+    Version 4.3 [based on IAB Open RTB 2.5]". JSON payloads over HTTP/1.1 POST
+    with Content-Type application/json, gzip supported on both request and
+    response, tmax timeout honoured.
+- id: openrtb-native
+  version: '1.2'
   conforms: true
-  evidence: InMobi Choice is a registered IAB Transparency & Consent Framework (TCF) CMP
+  evidence: InMobi publishes an "OpenRTB Native Ad Specification V1.2" document for native ad bid requests.
+- id: iab-tcf
+  version: '2.2 / 2.3'
+  conforms: true
+  evidence: >-
+    InMobi Choice is a registered IAB Transparency & Consent Framework CMP; the
+    2026-02-24 InMobi Now entry announces TCF 2.3 readiness.
 - id: iab-us-privacy-ccpa
   conforms: true
-  evidence: InMobi Choice supports the IAB US Privacy (CCPA) signal; Trust Center references CCPA
+  evidence: InMobi Choice supports the IAB US Privacy (CCPA) signal; Trust Center references CCPA.
 - id: gdpr
   conforms: true
-  evidence: Trust Center references GDPR data-protection compliance and consent management
+  evidence: Trust Center references GDPR data-protection compliance and consent management.
+- id: coppa
+  conforms: true
+  evidence: >-
+    The Ad Management API exposes a `childDirected` field (values 1|2|3) on the
+    App resource, the standard COPPA child-directed-treatment signal.
+- id: skadnetwork
+  conforms: true
+  evidence: The DSP Cost API exposes a dedicated SKAdNetwork report type at POST /api/v3/reports/skan.
 - id: tag-certified-against-fraud
   conforms: true
-  evidence: Trust Center displays TAG (Trustworthy Accountability Group) certification
+  evidence: Trust Center displays TAG (Trustworthy Accountability Group) certification.
+- id: iab-tech-lab
+  conforms: true
+  evidence: Trust Center names IAB Tech Lab membership/accreditation.
+- id: mma
+  conforms: true
+  evidence: Trust Center names MMA (Mobile Marketing Association) accreditation.
+
+# --- web API standards: InMobi's gap ---
+- id: openapi
+  conforms: false
+  evidence: >-
+    No OpenAPI or Swagger document is published anywhere. Probed /openapi.json,
+    /openapi.yaml, /swagger.json, /api-docs, /docs and /redoc on api.inmobi.com,
+    publisher.inmobi.com, api.cdr.inmobi.com, www.inmobi.com and
+    support.inmobi.com on 2026-08-12 — every path returned 302, 403 or 404.
+- id: asyncapi
+  conforms: false
+  evidence: No event or streaming contract is published; InMobi documents no webhooks for its REST APIs.
 - id: oauth2
   conforms: false
-  evidence: no public OAuth2 API surface documented
+  evidence: >-
+    No OAuth 2.0 authorization server. The DSP Cost API borrows the
+    clientId/clientSecret SHAPE at POST /api/v3/auth/token but returns a custom
+    envelope, not an RFC 6749 token response, and no
+    /.well-known/oauth-authorization-server is served (403).
+- id: oidc
+  conforms: false
+  evidence: No /.well-known/openid-configuration on any host (404 or 302).
 - id: rfc9457-problem-details
   conforms: false
-  evidence: no public REST error contract published
+  evidence: >-
+    Three different proprietary JSON error envelopes across three APIs; no
+    application/problem+json on any surface. See errors/inmobi-problem-types.yml.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation headers and no deprecation policy published.
+- id: ratelimit-headers
+  conforms: true
+  partial: true
+  evidence: >-
+    api.inmobi.com and publisher.inmobi.com return IETF draft ratelimit-headers
+    on live responses — `ratelimit-policy: 1500;w=900`, `ratelimit-limit`,
+    `ratelimit-remaining`, `ratelimit-reset` (observed 2026-08-12). Retry-After
+    is not returned and 429 semantics are not documented, so the implementation
+    is partial.
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No Idempotency-Key or equivalent on any write operation, including the Ad
+    Management API's POST create-app and create-placement.
+- id: json-api
+  conforms: false
+  evidence: Responses use ad-hoc wrappers ({success,data} / {error,respList,errorList}), not JSON:API.
+- id: hsts
+  conforms: true
+  evidence: >-
+    All three API hosts return Strict-Transport-Security with includeSubDomains
+    (max-age 15552000 on api.inmobi.com and publisher.inmobi.com, 31536000 on
+    api.cdr.inmobi.com). Note www.inmobi.com does NOT — see
+    security/inmobi-domain-security.yml.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: No /.well-known/security.txt on any of six probed hosts.
+- id: a2a-agent-card
+  conforms: false
+  evidence: No agent card at /.well-known/agent-card.json or the legacy /.well-known/agent.json on any host.
+- id: llms-txt
+  conforms: false
+  evidence: No /llms.txt served on any host (404, 403 or 302 on all six).

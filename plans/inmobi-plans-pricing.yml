@@ -1,0 +1,82 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://support.inmobi.com/choice/getting-started-cmp/inmobi-cmp-premium ,
+  https://support.inmobi.com/choice/frequently-asked-questions-choice/premium-faqs ,
+  probes of https://www.inmobi.com/pricing/ (404) and https://advertising.inmobi.com/pricing (404)
+notes: >-
+  InMobi publishes list pricing for exactly ONE product — InMobi CMP (Choice),
+  its IAB TCF consent management platform. Everything else (InMobi Advertising,
+  InMobi Exchange, InMobi DSP, the Publisher Platform and every REST API on this
+  profile) is sold enterprise-direct with no published rate card: there is no
+  /pricing page on www.inmobi.com or advertising.inmobi.com (both 404 on
+  2026-08-12), and none of the API reference pages attach a price, quota or
+  metering unit to API access. API access itself is not separately priced — it
+  is an entitlement of a publisher/DSP account.
+plan_count: 2
+currency: USD
+pricing_model: subscription (CMP only) + enterprise contract (all other products)
+api_metered: false
+api_priced_separately: false
+
+plans:
+- name: Essentials
+  product: InMobi CMP (Choice)
+  price: 0
+  currency: USD
+  billing_period: null
+  unit: per app or site
+  quote: Free for all apps/sites
+  included:
+  - GDPR and CCPA compliance coverage
+  - basic customization
+  - standard consent templates
+  - IAB vendor support only
+  - basic analytics
+  limits:
+    vendor_support: IAB vendors only
+    branding: basic customization only
+  source: https://support.inmobi.com/choice/getting-started-cmp/inmobi-cmp-premium
+
+- name: Premium
+  product: InMobi CMP (Choice)
+  price: 20
+  currency: USD
+  billing_period: month
+  unit: per domain
+  quote: $20 per domain/month or free via SSP integration
+  billing: charged automatically at the start of each cycle
+  alternative_unlock: >-
+    Free when the app or domain monetizes through the InMobi SSP — the paid tier
+    is waived as an incentive to route inventory through InMobi's exchange.
+  trial:
+    available: true
+    length_days: 30
+    unit: per newly added property
+    note: >-
+      A 30-day free trial per newly added property is reported in InMobi's
+      Premium FAQs; the Premium overview page itself does not restate the trial
+      length.
+  included:
+  - full branding control
+  - granular analytics
+  - geolocation targeting
+  - custom vendor management
+  source: https://support.inmobi.com/choice/getting-started-cmp/inmobi-cmp-premium
+
+unpriced_products:
+- product: InMobi Advertising / DSP
+  model: enterprise contract, managed and self-serve
+  published_rate_card: false
+  probe: {url: 'https://advertising.inmobi.com/pricing', status: 404, checked: '2026-08-12'}
+- product: InMobi Exchange (OpenRTB)
+  model: revenue share / auction, negotiated per DSP or publisher
+  published_rate_card: false
+- product: InMobi Publisher Platform (monetization)
+  model: revenue share on served impressions
+  published_rate_card: false
+  note: Publisher earnings are reported through the Reporting API `earnings` metric; the share itself is not published.
+- product: 'REST APIs: Publisher Reporting, Ad Management, DSP Cost, Server-to-Server Ad Request'
+  model: included with a publisher or DSP account; no separate API price, quota tier, or overage
+  published_rate_card: false
+  probe: {url: 'https://www.inmobi.com/pricing/', status: 404, checked: '2026-08-12'}

@@ -1,0 +1,171 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://support.inmobi.com/monetize/inmobi-apis/reporting-api ,
+  https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/api-details ,
+  https://support.inmobi.com/dsp/global/inmobi-dsp-global/reporting-for-inmobi-dsp-global/cost-api-integration-for-inmobi-dsp ,
+  live probes of each host (2026-08-12)
+format: proprietary
+rfc9457: false
+notes: >-
+  InMobi does not use RFC 9457 problem+json. Each of its three REST APIs ships a
+  DIFFERENT error envelope, and the envelopes disagree on both the wrapper key
+  and the code type — a numeric integer code on the Reporting API, a bracketed
+  string slug on the Ad Management API, and a dotted string slug on the DSP Cost
+  API. Every envelope shape below was confirmed against a live unauthenticated
+  request, not just read from the docs. Error names/remediation come from the
+  provider's published error tables.
+
+envelopes:
+- api: InMobi Publisher Reporting API 3.0
+  media_type: application/json
+  shape: '{"error": bool, "respList": [], "errorList": [{"code": int, "message": string}]}'
+  code_field: errorList[].code
+  code_type: integer
+  verified:
+    url: https://api.inmobi.com/v3.0/reporting/publisher
+    http_status: 400
+    body: '{"error":true,"errorList":[{"code":1004,"message":"Secret Key is missing"}]}'
+    fetched: '2026-08-12'
+- api: InMobi Ad Management API
+  media_type: application/json
+  shape: '{"error": bool, "errors": [{"errorCode": string, "reason": string}]}'
+  code_field: errors[].errorCode
+  code_type: string (bracketed slug, e.g. "[ERROR_MISSING_HEADERS]")
+  success_shape: '{"success": bool, "data": {}}'
+  verified:
+    url: https://publisher.inmobi.com/rest/api/v2/apps
+    http_status: 401
+    body: '{"error":true,"errors":[{"errorCode":"[ERROR_MISSING_HEADERS]","reason":"[x-account-id] header is missing"}]}'
+    fetched: '2026-08-12'
+- api: InMobi DSP Cost API
+  media_type: application/json
+  shape: '{"status": string, "code": int, "error": {"code": string, "message": string}, "message": string}'
+  code_field: error.code
+  code_type: string (dotted slug, e.g. "client.cred.invalid")
+  verified:
+    url: https://api.cdr.inmobi.com/api/v3/auth/token
+    http_status: 400
+    body: '{"status":"FAILED","code":400,"error":{"code":"client.cred.invalid","message":"The provided credentials are invalid. Please check your clientId & clientSecret and try again."},"message":"Request Processing Failed."}'
+    fetched: '2026-08-12'
+
+problem_types:
+# --- Publisher Reporting API 3.0 (numeric codes, documented ranges) ---
+- code: 1000
+  api: publisher-reporting
+  http_status: 500
+  title: Unexpected error in publisher report
+  remediation: Retry; if persistent, raise a ticket at https://support.inmobi.com/mytickets
+- code: 1001
+  api: publisher-reporting
+  http_status: 400
+  title: Invalid request object
+  remediation: Verify the reportRequest wrapper and its JSON structure.
+- code: 1002
+  api: publisher-reporting
+  http_status: 400
+  title: Invalid offset
+  remediation: offset must be an integer >= 0 and equal to (previous offset + previous length) when paginating.
+- code: 1003
+  api: publisher-reporting
+  http_status: 400
+  title: Invalid length
+  remediation: length must be an integer between 1 and 5000.
+- code: 1004
+  api: publisher-reporting
+  http_status: 400
+  title: Invalid client request / Secret Key is missing
+  remediation: Send the secretKey header (and accountId + sessionId) on every reporting call.
+  observed: true
+- code: 2000
+  api: publisher-reporting
+  http_status: 400
+  title: Missing account ID
+  remediation: Send the accountId header. The Account ID is on the Finance tab under Payment Settings.
+- code: 2001
+  api: publisher-reporting
+  http_status: 401
+  title: Invalid or unauthorized account ID
+  remediation: Confirm the account ID matches the API key's account.
+- code_range: 2021-2034
+  api: publisher-reporting
+  http_status: 400
+  title: Invalid metrics, groupBy, filterBy, date range, or platform value
+  remediation: >-
+    Validate each requested metric (adRequests, adImpressions, clicks, earnings,
+    servedImpressions, costPerMille, fillRate), each groupBy key, each filter
+    comparator, and the timeFrame format (yyyy-MM-dd:yyyy-MM-dd) against the
+    published reference.
+  note: InMobi publishes this band as a range rather than enumerating every code.
+- code: 2036
+  api: publisher-reporting
+  http_status: 400
+  title: Date cannot be after today
+  remediation: Cap the timeFrame end date at today's date in the account's reporting timezone.
+
+# --- Ad Management API (HTTP-status-shaped codes) ---
+- code: '400'
+  api: ad-management
+  http_status: 400
+  title: Bad Request
+  detail: Please check the values passed in the request body
+  remediation: Validate required body fields (storeUrl/appName for apps; appId/placementName/placementType for placements).
+- code: '401'
+  api: ad-management
+  http_status: 401
+  title: Unauthorized
+  detail: Please check the values passed in the header and auth
+  remediation: Send all three of x-client-secret, x-account-id and x-client-id.
+- code: ERROR_MISSING_HEADERS
+  api: ad-management
+  http_status: 401
+  title: Required header missing
+  detail: The reason field names the specific missing header, e.g. "[x-account-id] header is missing"
+  observed: true
+- code: AUTHENTICATION_ERROR
+  api: ad-management
+  http_status: 401
+  title: Authentication failed
+  detail: All headers present but the credential triplet did not authenticate.
+  observed: true
+- code: '500'
+  api: ad-management
+  http_status: 500
+  title: Server Error
+  detail: Internal issue. Please try again or contact support
+  remediation: Retry with backoff; escalate to support@inmobi.com.
+
+# --- DSP Cost API (dotted slugs) ---
+- code: client.cred.invalid
+  api: dsp-cost
+  http_status: 400
+  title: Invalid credentials
+  detail: The provided credentials are invalid. Please check your clientId & clientSecret and try again.
+  observed: true
+- code: token.generation.failed
+  api: dsp-cost
+  http_status: 500
+  title: Token generation error
+  remediation: Retry the POST /auth/token call; escalate if persistent.
+- code: authentication.token.invalid
+  api: dsp-cost
+  http_status: 401
+  title: Invalid or expired token
+  remediation: Tokens are valid for 8 hours; re-issue via POST /auth/token.
+- code: request.date.format_invalid
+  api: dsp-cost
+  http_status: 400
+  title: Invalid date format
+  remediation: startDate and endDate must be YYYY-MM-DD and within the last 90 days.
+- code: client.bad_request
+  api: dsp-cost
+  http_status: 400
+  title: Request validation failure
+  remediation: Check dimensions, measures and filters against the published reference.
+
+gaps:
+- no RFC 9457 application/problem+json on any surface
+- no type URIs; codes are not dereferenceable
+- three incompatible envelopes across three APIs, so a client cannot parse InMobi errors generically
+- the 2021-2034 band is published as a range, not an enumeration, so a client cannot map those codes to causes
+- no documented 429 body or Retry-After semantics despite RateLimit-* headers being served

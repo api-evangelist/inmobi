@@ -1,0 +1,102 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://support.inmobi.com/monetize/inmobi-apis/reporting-api ,
+  https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/api-details ,
+  https://support.inmobi.com/dsp/global/inmobi-dsp-global/reporting-for-inmobi-dsp-global/cost-api-integration-for-inmobi-dsp ,
+  https://support.inmobi.com/inmobi-now ,
+  live probes 2026-08-12
+notes: >-
+  InMobi versions every API in the URL path but publishes no deprecation policy,
+  no sunset schedule, no SLA and no status page. Version history is only visible
+  as the coexistence of old and new path segments and as SDK release notes on
+  the InMobi Now feed — there is no machine-readable lifecycle signal anywhere
+  on the API surface.
+
+versioning:
+  documented_policy: false
+  style: path-segment, inconsistent across products
+  header_versioning: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  current_versions:
+  - api: InMobi Publisher Reporting API
+    version: '3.0'
+    path: /v3.0/reporting/publisher
+    prior_versions_referenced: ['2.0', '1.0']
+    note: >-
+      The session endpoint is still on /v1.0/generatesession/generate — one API
+      spans two major versions. On 2026-08-12 that documented v1.0 session path
+      returned HTTP 404 with a JSON error envelope while the v3.0 reporting path
+      returned a documented 400, so the published session route may be stale.
+  - api: InMobi Ad Management API
+    version: mixed v1 / v2
+    paths: ['/rest/api/v2/apps', '/rest/api/v1/placements']
+    note: Apps are v2, placements are v1, within a single documented API product.
+  - api: InMobi DSP Cost API
+    version: v3
+    path: /api/v3
+  - api: InMobi Server-to-Server Ad Request API
+    version: '3.1'
+    path: /showad/v3.1
+  - api: InMobi Exchange (OpenRTB)
+    version: OpenRTB 2.5 (InMobi spec version 4.3)
+    note: Tracks the IAB OpenRTB 2.5 specification; InMobi publishes its own delta spec as a PDF.
+
+deprecation:
+  policy_published: false
+  policy_url: null
+  notice_period: null
+  sunset_header_support: false
+  deprecated_operations: []
+  note: >-
+    No deprecation policy, notice period, or migration guide is published for
+    any InMobi API. Nothing in apis.yml or the docs commits InMobi to a window
+    before a version is withdrawn.
+
+sla:
+  published: false
+  uptime_target: null
+  note: No public SLA or uptime commitment. Availability terms are contractual.
+
+status_page:
+  published: false
+  probes:
+  - url: https://status.inmobi.com
+    status: 0
+    result: does not resolve
+  - url: https://inmobi.statuspage.io/
+    status: 200
+    result: redirects to https://www.atlassian.com/software/statuspage — Statuspage marketing page, not a provisioned InMobi status page
+  - url: https://inmobistatus.statuspage.io
+    status: 200
+    result: same Atlassian marketing redirect
+  - url: https://www.inmobi.com/status
+    status: 404
+  - url: https://support.inmobi.com/status
+    status: 404
+  checked: '2026-08-12'
+  note: >-
+    Recorded as an absence, verified against five candidate hosts. No
+    StatusPage pointer is emitted in apis.yml because no status page is served.
+
+data_retention:
+- api: InMobi DSP Cost API
+  window: 90 days
+  note: '"Data can be fetched only for the last 90 days."'
+
+changelog:
+  published: true
+  url: https://support.inmobi.com/inmobi-now
+  machine_readable: false
+  see: changelog/inmobi-changelog.yml
+
+sdk_lifecycle:
+  note: >-
+    The client SDKs decay independently of the APIs. See
+    packages/inmobi-packages.yml — the Android and iOS ad SDKs are current
+    (11.4.x, July/August 2026), but the legacy Java artifact
+    com.inmobi.monetization:inmobi-ads has not published since 2023-09 and the
+    first-party server-side ad-request client library github.com/InMobi/api-monetization
+    has not been pushed since 2016-02.

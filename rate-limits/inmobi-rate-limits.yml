@@ -1,0 +1,101 @@
+generated: '2026-08-12'
+method: probed
+source: >-
+  live unauthenticated responses from https://api.inmobi.com/v3.0/reporting/publisher
+  and https://publisher.inmobi.com/rest/api/v2/apps (2026-08-12) , plus
+  https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/api-details ,
+  https://support.inmobi.com/monetize/inmobi-apis/reporting-api
+notes: >-
+  InMobi returns draft-standard RateLimit-* response headers on its API hosts —
+  a genuinely useful runtime signal and better than most ad-tech peers. The
+  headers were read from live anonymous requests, so the values below are
+  observed, not quoted. NOTE A DISCREPANCY: the Ad Management API docs state
+  "500 requests in an interval of 15 minutes", but the live edge advertises
+  `ratelimit-policy: 1500;w=900` (1500 requests per 900 seconds) on the same
+  host. Both numbers are recorded; the documented figure is likely the
+  application-tier quota and the header the edge-tier quota.
+limit_count: 4
+
+response_headers:
+  observed: true
+  style: IETF draft ratelimit-headers (lowercase, non-prefixed)
+  headers:
+  - name: ratelimit-policy
+    example: 1500;w=900
+    description: Quota and window advertised by the edge (1500 requests per 900-second window).
+  - name: ratelimit-limit
+    example: '1500'
+    description: Requests permitted in the current window.
+  - name: ratelimit-remaining
+    example: '1496'
+    description: Requests left in the current window.
+  - name: ratelimit-reset
+    example: '618'
+    description: Seconds until the window resets.
+  retry_after: not observed
+  exhaustion_status: not observed (quota not exhausted during probing); no 429 semantics documented
+  note: >-
+    No X-RateLimit-* variants and no Retry-After were returned. The RFC 9457
+    problem+json media type is not used on any error response.
+
+limits:
+- id: publisher-reporting-edge
+  api: InMobi Publisher Reporting API 3.0
+  scope: per-host (observed at the edge, anonymous)
+  window: 900s
+  limit: 1500
+  burst: null
+  method: probed
+  evidence:
+    url: https://api.inmobi.com/v3.0/reporting/publisher
+    http_status: 400
+    headers: 'ratelimit-policy: 1500;w=900 | ratelimit-limit: 1500 | ratelimit-remaining: 1496 | ratelimit-reset: 618'
+    fetched: '2026-08-12'
+
+- id: publisher-reporting-rows
+  api: InMobi Publisher Reporting API 3.0
+  scope: per-request payload cap
+  window: per call
+  limit: 5000
+  unit: data rows
+  method: searched
+  docs: https://support.inmobi.com/monetize/inmobi-apis/reporting-api
+  note: >-
+    "The number of data rows is restricted to 5000 on every reporting API call."
+    Paginate with offset + length; the offset of the next call must equal
+    (offset + length) of the previous call, and orderBy/orderType are required
+    when paginating.
+
+- id: publisher-reporting-sessions
+  api: InMobi Publisher Reporting API 3.0
+  scope: per API key
+  window: 8h
+  limit: 15
+  unit: session-generation calls
+  method: searched
+  docs: https://support.inmobi.com/monetize/inmobi-apis/reporting-api
+  note: Sessions are valid for 8 hours; a maximum of 15 may be generated per 8-hour period per API key.
+
+- id: ad-management-documented
+  api: InMobi Ad Management API
+  scope: per publisher
+  window: 900s
+  limit: 500
+  method: searched
+  docs: https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/api-details
+  note: >-
+    Documented as "500 requests in an interval of 15 minutes". The live edge on
+    the same host advertised ratelimit-limit 1500 / w=900 on 2026-08-12 —
+    recorded as a conflict rather than reconciled, because InMobi does not
+    publish which tier governs.
+  evidence:
+    url: https://publisher.inmobi.com/rest/api/v2/apps
+    http_status: 401
+    headers: 'ratelimit-policy: 1500;w=900 | ratelimit-limit: 1500 | ratelimit-remaining: 1499 | ratelimit-reset: 549'
+    fetched: '2026-08-12'
+
+data_retention_limits:
+- api: InMobi DSP Cost API
+  limit: last 90 days
+  docs: https://support.inmobi.com/dsp/global/inmobi-dsp-global/reporting-for-inmobi-dsp-global/cost-api-integration-for-inmobi-dsp
+  note: '"Data can be fetched only for the last 90 days."'

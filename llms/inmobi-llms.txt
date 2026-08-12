@@ -1,33 +1,69 @@
 # InMobi
 
-> InMobi is a global advertising technology and mobile marketing platform headquartered in Bengaluru, India, and backed by SoftBank Vision Fund. It connects brands and consumers across mobile apps and the open web through advertising, monetization, a programmatic OpenRTB exchange, a demand-side platform, and an IAB TCF consent management platform. InMobi exposes native mobile ad SDKs (Android, iOS) rather than a public REST API.
+> InMobi is a global advertising technology and mobile marketing platform headquartered in Bengaluru, India, and backed by SoftBank Vision Fund. It connects brands and consumers across mobile apps and the open web through advertising, monetization, a programmatic OpenRTB exchange, a demand-side platform, and an IAB TCF consent management platform. InMobi operates four documented, live REST APIs plus an OpenRTB 2.5 exchange, and ships native mobile ad SDKs for Android and iOS. It publishes no OpenAPI, no AsyncAPI, no OAuth server, and no client library for any of its REST APIs.
+
+## APIs
+
+- [InMobi Publisher Reporting API 3.0](https://support.inmobi.com/monetize/inmobi-apis/reporting-api): `POST https://api.inmobi.com/v3.0/reporting/publisher`. Automates download of app inventory performance data. JSON body with `reportRequest` {metrics, timeFrame, groupBy, filterBy, offset, length, orderBy, orderType}. Metrics: adRequests, adImpressions, clicks, earnings, servedImpressions, costPerMille (eCPM), fillRate. Max 5000 rows per call. Auth: `userName`, `secretKey`, `accountId`, `sessionId` headers; session from `POST https://api.inmobi.com/v1.0/generatesession/generate`, valid 8h, max 15 per 8h.
+- [InMobi Ad Management API](https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/overview-ad-apis): base `https://publisher.inmobi.com/rest/api`. Manage monetization inventory. Apps: `GET/POST /v2/apps`, `GET/PATCH /v2/apps/{appId}`. Placements: `GET/POST /v1/placements`, `GET/PATCH /v1/placements/{placementId}`. Auth: `x-client-secret`, `x-account-id`, `x-client-id` headers. Documented limit 500 requests / 15 minutes.
+- [InMobi DSP Cost API](https://support.inmobi.com/dsp/global/inmobi-dsp-global/reporting-for-inmobi-dsp-global/cost-api-integration-for-inmobi-dsp): base `https://api.cdr.inmobi.com/api/v3`. Asynchronous DSP spend reporting. `POST /auth/token` (clientId + clientSecret, 8h token), `POST /reports/network|programmatic|skan`, `GET /reports/{reportID}/status`, `GET /reports/{reportID}/download`. Last 90 days of data only.
+- [InMobi Server-to-Server Ad Request API 3.1](https://support.inmobi.com/monetize/integration/monetization-server-to-server-api-integration-guides/api-3.1-server-to-server-integration-guidelines): `https://api.w.inmobi.com/showad/v3.1`. Request ads from your own servers rather than through the SDK.
+- [InMobi Exchange — OpenRTB 2.5](https://support.inmobi.com/monetize/ortb-integrations/bid-request-overview): programmatic ad exchange implementing IAB OpenRTB 2.5 (InMobi spec v4.3) and OpenRTB Native Ad 1.2. HTTP POST, JSON, gzip on request and response, `tmax` timeout. Bidder endpoints are provisioned per DSP partner, so there is no public base URL.
+
+## API conventions and caveats
+
+- No OpenAPI, Swagger, AsyncAPI, or JSON Schema is published for any InMobi API. Probed on every host 2026-08-12 — all 302, 403 or 404.
+- Three APIs, three auth schemes, three error envelopes, four versioning styles. There is no shared conventions layer; a client cannot be reused across them.
+- Error envelopes: Reporting `{"error":bool,"respList":[],"errorList":[{"code":int,"message":str}]}`; Ad Management `{"error":bool,"errors":[{"errorCode":str,"reason":str}]}`; Cost `{"status":str,"code":int,"error":{"code":str,"message":str}}`. None use RFC 9457 problem+json.
+- Rate limiting is signalled with IETF draft `ratelimit-policy` / `ratelimit-limit` / `ratelimit-remaining` / `ratelimit-reset` headers on live responses. No `Retry-After`, no documented 429 body.
+- No idempotency key on any write operation, including create-app and create-placement.
+- No OAuth 2.0, no OIDC, no scopes. Access is account-wide per API key.
+- No deprecation policy, no Sunset/Deprecation headers, no SLA, and no status page (five candidate status hosts probed, none provisioned).
+- Unrouted paths on `api.inmobi.com` and `publisher.inmobi.com` 302-redirect to a non-resolving sink instead of returning 404, which defeats automated contract discovery.
 
 ## Products
+
 - [InMobi Advertising](https://advertising.inmobi.com/): Brand building, app growth, and ad monetization for media buyers and owners.
 - [InMobi Exchange](https://support.inmobi.com/advertise): Programmatic ad exchange with OpenRTB bidding for demand-side platforms.
 - [InMobi DSP](https://support.inmobi.com/dsp): Performance-marketing demand-side platform with onboarding, integrations, and reporting.
-- [InMobi Choice](https://support.inmobi.com/choice/implementation-guide/ios-implementation): IAB TCF v2 consent management platform (CMP).
+- [InMobi CMP / Choice](https://www.inmobi.com/cmp): IAB TCF consent management platform. Essentials tier free; Premium $20 per domain/month, or free when the property monetizes through the InMobi SSP.
 - [Glance](https://glance.com/): Consumer intelligent shopping / lock-screen experience.
 - [1Weather](https://www.1weatherapp.com/brand/): Consumer weather application.
 
 ## Developer
+
 - [Support / Developer Center](https://support.inmobi.com/): Documentation hub for monetization, exchange, DSP, and CMP.
+- [InMobi APIs index](https://support.inmobi.com/monetize/inmobi-apis): Entry point for the Reporting and Ad Management APIs.
 - [Android SDK Integration](https://support.inmobi.com/monetize/android-guidelines/): Maven Central `com.inmobi.monetization:inmobi-ads-kotlin`.
 - [GitHub Organization](https://github.com/InMobi): Sample code and SDK packages (Android, iOS, Swift).
-- [InMobi Now](https://support.inmobi.com/inmobi-now): SDK releases and feature-launch feed (changelog).
+- [InMobi Now](https://support.inmobi.com/inmobi-now): Dated product-release feed. Product changes only — no API or endpoint changes are announced here, and there is no RSS feed.
+- Support: support@inmobi.com, tickets at https://support.inmobi.com/mytickets
 
 ## SDKs
-- [Android SDK on Maven Central](https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads-kotlin): `com.inmobi.monetization:inmobi-ads-kotlin:11.4.0`.
-- [iOS SDK on CocoaPods](https://cocoapods.org/pods/InMobiSDK): `pod 'InMobiSDK', '~> 11.4'`.
-- [iOS Swift Package](https://github.com/InMobi/InMobiSDK-Swift-Package): Swift Package Manager distribution.
+
+- [Android SDK on Maven Central](https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads-kotlin): `com.inmobi.monetization:inmobi-ads-kotlin:11.4.0`, published 2026-07-08.
+- [iOS SDK on CocoaPods](https://cocoapods.org/pods/InMobiSDK): `pod 'InMobiSDK', '~> 11.4'` — 11.4.1, August 2026.
+- [iOS Swift Package](https://github.com/InMobi/InMobiSDK-Swift-Package): Swift Package Manager, tag 11.4.1 published 2026-08-05.
+- No REST API client library exists in any language. Nothing on npm, PyPI, RubyGems, NuGet, crates.io or pkg.go.dev.
 
 ## Standards & Compliance
-- [Trust Center](https://www.inmobi.com/trust-center/): TAG Certified Against Fraud, IAB Tech Lab, MMA; GDPR and CCPA compliance.
-- [Security](https://www.inmobi.com/security/): Security posture overview.
+
+- [Trust Center](https://www.inmobi.com/trust-center/): TAG Certified Against Fraud, IAB Tech Lab, MMA; GDPR and CCPA compliance. No SOC 2, ISO 27001, PCI DSS or HIPAA certification is publicly named.
+- [Security](https://www.inmobi.com/security/): Security posture overview. No vulnerability disclosure policy, no security.txt, and no bug bounty on HackerOne or Bugcrowd.
 - [Privacy Policy](https://www.inmobi.com/website-privacy-policy/)
 
 ## Repo artifacts
+
+- [Authentication](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/authentication/inmobi-authentication.yml)
+- [Rate limits](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/rate-limits/inmobi-rate-limits.yml)
+- [Error catalog](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/errors/inmobi-problem-types.yml)
+- [Conventions](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/conventions/inmobi-conventions.yml)
+- [Data model](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/data-model/inmobi-data-model.yml)
+- [Lifecycle](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/lifecycle/inmobi-lifecycle.yml)
+- [Changelog](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/changelog/inmobi-changelog.yml)
+- [Plans and pricing](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/plans/inmobi-plans-pricing.yml)
 - [Packages / SDKs](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/packages/inmobi-packages.yml)
 - [Conformance](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/conformance/inmobi-conformance.yml)
+- [Well-known probe](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/well-known/inmobi-well-known.yml)
 - [Trust Center](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/security/inmobi-trust-center.yml)
 - [Domain Security](https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/security/inmobi-domain-security.yml)

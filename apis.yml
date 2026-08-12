@@ -5,12 +5,15 @@ description: 'InMobi is a global advertising technology and mobile marketing pla
   itself as the intelligence layer of the consumer internet, connecting brands and
   consumers across mobile apps and the open web. InMobi''s enterprise platforms include
   InMobi Advertising for brand building, app growth and ad monetization; the InMobi
-  Exchange, a programmatic OpenRTB ad exchange for demand-side platforms; InMobi DSP
-  performance solutions; and InMobi Choice, an IAB TCF-certified consent management
-  platform (CMP). InMobi ships native mobile ad SDKs for Android (Maven Central) and
-  iOS (CocoaPods and Swift Package Manager) rather than a public REST API, and integrates
-  with mediation platforms such as AppLovin MAX, Google Mobile Ads, and IronSource.
-  Consumer brands include Glance and the 1Weather app.'
+  Exchange, a programmatic OpenRTB 2.5 ad exchange for demand-side platforms; InMobi
+  DSP performance solutions; and InMobi CMP (Choice), an IAB TCF-certified consent
+  management platform. InMobi operates four documented, live REST APIs — the Publisher
+  Reporting API 3.0 for inventory performance data, the Ad Management API for managing
+  apps and placements, the DSP Cost API for asynchronous spend reporting, and a
+  Server-to-Server Ad Request API — alongside native mobile ad SDKs for Android (Maven
+  Central) and iOS (CocoaPods and Swift Package Manager). No OpenAPI, AsyncAPI, OAuth
+  server or REST client library is published for any of them. Consumer brands include
+  Glance and the 1Weather app.'
 url: https://raw.githubusercontent.com/api-evangelist/inmobi/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -19,20 +22,27 @@ x-backed-by:
 x-tier: stub
 x-tier-reason: portfolio-lead
 accessModel:
-  pricing: unknown
-  onboarding: unknown
-  trial: false
+  pricing: freemium
+  onboarding: request
+  trial: true
   try_now: false
-  public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
-  method: derived
+  public: true
+  label: Freemium
+  confidence: medium
+  source:
+  - https://support.inmobi.com/choice/getting-started-cmp/inmobi-cmp-premium
+  - plans/inmobi-plans-pricing.yml
+  generated: '2026-08-12'
+  method: searched
+  note: >-
+    InMobi CMP publishes a free Essentials tier and a $20/domain/month Premium
+    tier with a 30-day trial per property. Every other product, including all
+    four REST APIs, is enterprise-direct with no published rate card and API
+    access is an entitlement of an approved publisher or DSP account.
 image: https://github.com/InMobi.png
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-19'
+modified: '2026-08-12'
 tags:
 - Company
 - Enterprise
@@ -45,7 +55,184 @@ tags:
 - SDK
 - Consent Management
 - DSP
-apis: []
+- Reporting
+apis:
+- aid: inmobi:inmobi-publisher-reporting-api
+  name: InMobi Publisher Reporting API
+  description: >-
+    Automates download of app inventory performance data for InMobi publishers.
+    A single POST to /v3.0/reporting/publisher takes a reportRequest envelope of
+    metrics (adRequests, adImpressions, clicks, earnings, servedImpressions,
+    costPerMille, fillRate), a timeFrame, groupBy dimensions, filterBy
+    predicates and offset/length pagination capped at 5000 rows. Authenticated
+    with userName/secretKey/accountId/sessionId headers, where the session is
+    minted by a separate 8-hour, 15-per-window session endpoint. JSON and CSV
+    output. Verified live 2026-08-12.
+  humanURL: https://support.inmobi.com/monetize/inmobi-apis/reporting-api
+  baseURL: https://api.inmobi.com
+  tags:
+  - Reporting
+  - Analytics
+  - Monetization
+  properties:
+  - type: Documentation
+    url: https://support.inmobi.com/monetize/inmobi-apis/reporting-api
+  - type: APIReference
+    url: https://support.inmobi.com/monetize/reporting-api
+  - type: Authentication
+    url: authentication/inmobi-authentication.yml
+  - type: RateLimits
+    url: rate-limits/inmobi-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/inmobi-problem-types.yml
+  - type: DataModel
+    url: data-model/inmobi-data-model.yml
+  x-evidence:
+    verified: '2026-08-12'
+    method: live unauthenticated POST
+    url: https://api.inmobi.com/v3.0/reporting/publisher
+    http_status: 400
+    body: '{"error":true,"errorList":[{"code":1004,"message":"Secret Key is missing"}]}'
+    note: >-
+      Rejected with the provider's own documented error code 1004, and returned
+      IETF draft ratelimit-* headers — proof of a live, routed, documented API.
+
+- aid: inmobi:inmobi-ad-management-api
+  name: InMobi Ad Management API
+  description: >-
+    Manages InMobi monetization inventory — the apps and placements a publisher
+    monetizes through InMobi — without clicking through the dashboard. Apps are
+    listed, fetched, created and patched at /rest/api/v2/apps; placements at
+    /rest/api/v1/placements, carrying placementType (INTERSTITIAL, BANNER,
+    REWARDED_VIDEO, NATIVE), cpmFloor, audience-bidding settings and Amazon A9
+    tag identifiers. Authenticated with an x-client-secret / x-account-id /
+    x-client-id header triplet. Verified live 2026-08-12.
+  humanURL: https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/overview-ad-apis
+  baseURL: https://publisher.inmobi.com/rest/api
+  tags:
+  - Ad Management
+  - Inventory
+  - Monetization
+  properties:
+  - type: Documentation
+    url: https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/overview-ad-apis
+  - type: APIReference
+    url: https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/api-details
+  - type: Authentication
+    url: https://support.inmobi.com/monetize/inmobi-apis/ad-management-api/authentication-and-request-protocol
+  - type: RateLimits
+    url: rate-limits/inmobi-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/inmobi-problem-types.yml
+  - type: DataModel
+    url: data-model/inmobi-data-model.yml
+  x-evidence:
+    verified: '2026-08-12'
+    method: live unauthenticated GET
+    url: https://publisher.inmobi.com/rest/api/v2/apps
+    http_status: 401
+    body: '{"error":true,"errors":[{"errorCode":"[ERROR_MISSING_HEADERS]","reason":"[x-account-id] header is missing"}]}'
+    note: >-
+      Names the missing documented header explicitly; supplying all three
+      placeholder headers returned 401 AUTHENTICATION_ERROR.
+
+- aid: inmobi:inmobi-dsp-cost-api
+  name: InMobi DSP Cost API
+  description: >-
+    Asynchronous spend reporting for InMobi DSP advertisers. A bearer token is
+    minted from clientId/clientSecret at POST /auth/token (8-hour validity), then
+    a report is created at POST /reports/network, /reports/programmatic or
+    /reports/skan with startDate, endDate, dimensions, measures and filters,
+    polled at GET /reports/{reportID}/status, and retrieved at GET
+    /reports/{reportID}/download. Data is available for the last 90 days only.
+    Verified live 2026-08-12.
+  humanURL: https://support.inmobi.com/dsp/global/inmobi-dsp-global/reporting-for-inmobi-dsp-global/cost-api-integration-for-inmobi-dsp
+  baseURL: https://api.cdr.inmobi.com/api/v3
+  tags:
+  - DSP
+  - Reporting
+  - Advertising
+  properties:
+  - type: Documentation
+    url: https://support.inmobi.com/dsp/global/inmobi-dsp-global/reporting-for-inmobi-dsp-global/cost-api-integration-for-inmobi-dsp
+  - type: Authentication
+    url: authentication/inmobi-authentication.yml
+  - type: ErrorCatalog
+    url: errors/inmobi-problem-types.yml
+  - type: DataModel
+    url: data-model/inmobi-data-model.yml
+  x-evidence:
+    verified: '2026-08-12'
+    method: live unauthenticated POST
+    url: https://api.cdr.inmobi.com/api/v3/auth/token
+    http_status: 400
+    body: '{"status":"FAILED","code":400,"error":{"code":"client.cred.invalid","message":"The provided credentials are invalid. Please check your clientId & clientSecret and try again."}}'
+    note: >-
+      Returns the provider's own documented error slug client.cred.invalid.
+      Separate domain from the rest of InMobi's surface, but named as the Cost
+      API base in InMobi's own DSP documentation.
+
+- aid: inmobi:inmobi-server-to-server-ad-request-api
+  name: InMobi Server-to-Server Ad Request API
+  description: >-
+    Lets a publisher request InMobi ads from its own servers rather than through
+    the client SDK, using the InMobi ad-request/ad-response contract at
+    /showad/v3.1. The caller is identified by an InMobi Property ID carried in
+    the request payload rather than by an authentication header. Verified live
+    2026-08-12.
+  humanURL: https://support.inmobi.com/monetize/integration/monetization-server-to-server-api-integration-guides/api-3.1-server-to-server-integration-guidelines
+  baseURL: https://api.w.inmobi.com
+  tags:
+  - Ad Serving
+  - Monetization
+  properties:
+  - type: Documentation
+    url: https://support.inmobi.com/monetize/integration/monetization-server-to-server-api-integration-guides/api-3.1-server-to-server-integration-guidelines
+  - type: SourceCode
+    url: https://github.com/InMobi/api-monetization
+  x-evidence:
+    verified: '2026-08-12'
+    method: live GET and POST
+    url: https://api.w.inmobi.com/showad/v3.1
+    http_status: 204
+    note: >-
+      Live routed ad-serving host; an empty request returns 204 No Content (no
+      ad), which is correct behaviour rather than an error. The linked
+      SourceCode repo is InMobi's own seven-language client for the prior "API
+      2.0" generation of this endpoint and has not been updated since 2016.
+
+- aid: inmobi:inmobi-exchange-openrtb
+  name: InMobi Exchange (OpenRTB 2.5)
+  description: >-
+    InMobi's programmatic ad exchange, integrated by demand-side platforms over
+    the IAB OpenRTB 2.5 protocol. InMobi publishes its own delta specification
+    ("InMobi Open RTB 2.5 Specification Version 4.3") plus an OpenRTB Native Ad
+    Specification v1.2. HTTP/1.1 POST with application/json payloads, gzip
+    supported on both bid requests and bid responses, and a tmax auction
+    timeout. Bidder endpoints are provisioned per DSP partner during onboarding,
+    so InMobi publishes no public base URL for this surface.
+  humanURL: https://support.inmobi.com/monetize/ortb-integrations/bid-request-overview
+  tags:
+  - OpenRTB
+  - Exchange
+  - Programmatic
+  properties:
+  - type: Documentation
+    url: https://support.inmobi.com/monetize/ortb-integrations/bid-request-overview
+  - type: APIReference
+    url: https://support.inmobi.com/advertise/integration/ortb-specs/sample-bid-request-dsp
+  - type: Specification
+    url: https://go.inmobi.net/hubfs/Publisher%20Collaterals%20(Anish)/InMobi%20OpenRTB%202.5%20Spec%202020.pdf
+  - type: Conformance
+    url: conformance/inmobi-conformance.yml
+  x-evidence:
+    verified: '2026-08-12'
+    method: documentation review
+    note: >-
+      No baseURL is recorded because InMobi provisions bidder endpoints per DSP
+      partner; inventing one would be a fabrication. The specification is
+      published as PDF, not as a machine-readable contract.
+
 common:
 - type: TrustCenter
   url: security/inmobi-trust-center.yml
@@ -58,7 +245,7 @@ common:
 - type: Documentation
   url: https://support.inmobi.com/monetize
 - type: APIReference
-  url: https://support.inmobi.com/advertise
+  url: https://support.inmobi.com/monetize/inmobi-apis
 - type: GettingStarted
   url: https://support.inmobi.com/monetize
 - type: Support
@@ -67,10 +254,20 @@ common:
   url: https://github.com/InMobi
 - type: ChangeLog
   url: https://support.inmobi.com/inmobi-now
+- type: ChangeLog
+  url: changelog/inmobi-changelog.yml
+- type: Blog
+  url: https://www.inmobi.com/blog
+- type: Pricing
+  url: https://support.inmobi.com/choice/getting-started-cmp/inmobi-cmp-premium
+- type: TermsOfService
+  url: https://www.inmobi.com/terms-of-service
 - type: PrivacyPolicy
   url: https://www.inmobi.com/website-privacy-policy/
 - type: Login
   url: https://publisher.inmobi.com/
+- type: SignUp
+  url: https://publisher.inmobi.com/signup
 - type: Compliance
   url: https://www.inmobi.com/trust-center/
 - type: Security
@@ -83,13 +280,32 @@ common:
   url: conformance/inmobi-conformance.yml
 - type: LLMsTxt
   url: llms/inmobi-llms.txt
+- type: Authentication
+  url: authentication/inmobi-authentication.yml
+- type: RateLimits
+  url: rate-limits/inmobi-rate-limits.yml
+- type: ErrorCatalog
+  url: errors/inmobi-problem-types.yml
+- type: Conventions
+  url: conventions/inmobi-conventions.yml
+- type: DataModel
+  url: data-model/inmobi-data-model.yml
+- type: Lifecycle
+  url: lifecycle/inmobi-lifecycle.yml
+- type: Plans
+  url: plans/inmobi-plans-pricing.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 x-enrichment:
-  date: '2026-07-19'
-  status: backfilled
+  date: '2026-08-12'
+  status: enriched
+  artifacts_added: 8
   pass: local-v1
-  note: backfilled from .gitignore signal + verified work evidence
+  note: >-
+    Round 2. Contract discovery found four documented, live REST APIs that the
+    2026-07-19 round recorded as absent ("ships native mobile ad SDKs rather
+    than a public REST API"). No OpenAPI, AsyncAPI, agent card, llms.txt or
+    /.well-known document is served on any of six probed hosts.

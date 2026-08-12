@@ -1,0 +1,84 @@
+generated: '2026-08-12'
+method: searched
+source: https://support.inmobi.com/inmobi-now
+url: https://support.inmobi.com/inmobi-now
+name: InMobi Now
+notes: >-
+  "InMobi Now" is InMobi's dated product-release feed, covering the Publisher
+  Platform, Exchange and CMP. It is a product changelog, not an API changelog —
+  entries announce features, not endpoint, schema, or version changes, and no
+  entry in the captured window references the Reporting, Ad Management, Cost, or
+  Server-to-Server APIs. There is no RSS/Atom feed and no version numbers, so it
+  cannot be diffed by a machine.
+scheme: dated product releases, no version numbers
+machine_readable: false
+feed: null
+current_version: null
+breaking_change_flags: false
+api_scoped: false
+latest_entry_date: '2026-06-01'
+entry_count_captured: 11
+
+entries:
+- date: '2026-06-01'
+  product: Publisher Platform
+  title: Add more demand with CloudX
+  type: addition
+  highlight: Integration enabling additional demand sources through the mediation platform.
+- date: '2026-05-28'
+  product: Exchange
+  title: Reduce friction with Inline Installs
+  type: addition
+  highlight: Users can install apps directly from an ad without extra navigation.
+- date: '2026-05-27'
+  product: CMP
+  title: Flexible CMP billing for growing teams
+  type: addition
+  highlight: Subscription-based access to premium privacy-compliance features.
+- date: '2026-05-04'
+  product: Exchange
+  title: Help users explore your app before installing
+  type: addition
+  highlight: Store View lets users preview app experiences inside the ad journey.
+- date: '2026-04-14'
+  product: Exchange
+  title: Get users to the app store faster
+  type: addition
+  highlight: Skip-to-Store shortens the path from ad engagement to the store listing.
+- date: '2026-03-21'
+  product: Exchange
+  title: Streamline installs with AutoStore
+  type: addition
+  highlight: Automated guidance reduces friction in the install conversion journey.
+- date: '2026-02-27'
+  product: CMP
+  title: Create consent experiences that match your brand
+  type: addition
+  highlight: Custom themes for branded privacy banners and consent interfaces.
+- date: '2026-02-24'
+  product: CMP
+  title: Prepare for TCF 2.3 compliance
+  type: compliance
+  highlight: New IAB TCF 2.3 transparency requirements supported in InMobi Choice.
+- date: '2026-02-10'
+  product: Publisher Platform
+  title: Publisher Signals integration is now available
+  type: addition
+  highlight: First-party data sharing to improve audience understanding and monetization.
+- date: '2026-02-08'
+  product: Exchange
+  title: Reach valuable users again with Remarketing Sync
+  type: addition
+  highlight: Audience synchronization for user re-engagement campaigns.
+- date: '2026-01-23'
+  product: Exchange
+  title: Capture attention with In-Feed Video
+  type: addition
+  highlight: Video ads integrated within content feeds for contextual engagement.
+
+gaps:
+- no RSS/Atom or JSON feed
+- no version numbers on entries
+- no breaking-change flags
+- no API-scoped entries; the REST APIs are absent from the feed entirely
+- no deprecation notices (see lifecycle/inmobi-lifecycle.yml)

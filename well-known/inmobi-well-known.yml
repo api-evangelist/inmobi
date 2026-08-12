@@ -1,31 +1,112 @@
-generated: '2026-07-19'
-method: searched
+generated: '2026-08-12'
+method: probed
+source: live probes of every InMobi host named in apis.yml (2026-08-12)
 notes: >-
-  Probed the standard /.well-known/ discovery surface on both the corporate and
-  support hosts. None are published (all 404). InMobi has no OIDC/OAuth discovery
-  document, security.txt, api-catalog, or ai-plugin.json.
+  Re-probed on 2026-08-12 across ALL SIX InMobi hosts now known to this profile,
+  including the three API hosts discovered this round. Nothing is served. Not one
+  path on not one host returns a document — no security.txt, no OIDC or OAuth
+  discovery, no api-catalog, no ai-plugin.json, and no A2A agent card at either
+  the current /.well-known/agent-card.json or the legacy /.well-known/agent.json
+  path.
+  TWO FAILURE SHAPES WORTH DISTINGUISHING:
+  (1) www.inmobi.com, support.inmobi.com and advertising.inmobi.com return an
+  honest 404 — but with an HTML body, so a 200 on any of these hosts would need
+  content inspection before being trusted.
+  (2) api.inmobi.com and publisher.inmobi.com return HTTP 302 to
+  https://dummy.blacklisted.host/<path> for every unrouted path, and
+  api.cdr.inmobi.com returns 403 for everything. These are edge blackholes: a
+  discovery client never receives a 404, it receives a redirect to a
+  non-resolving sink or a blanket forbidden. That defeats automated contract
+  discovery on exactly the hosts that serve the real APIs.
+  NO WellKnown OR SecurityTxt POINTER IS EMITTED IN apis.yml — this file records
+  an absence, and an absence must never be wired as a presence.
+served_document_count: 0
+pointer_emitted: false
+
 hosts:
+- host: https://api.inmobi.com
+  role: Publisher Reporting API host
+  edge_behaviour: 302 redirect to https://dummy.blacklisted.host/<path> for unrouted paths
+  documents:
+  - {path: /.well-known/security.txt, status: 302, served: false}
+  - {path: /.well-known/openid-configuration, status: 302, served: false}
+  - {path: /.well-known/oauth-authorization-server, status: 302, served: false}
+  - {path: /.well-known/oauth-protected-resource, status: 302, served: false}
+  - {path: /.well-known/api-catalog, status: 302, served: false}
+  - {path: /.well-known/ai-plugin.json, status: 302, served: false}
+  - {path: /.well-known/agent-card.json, status: 302, served: false}
+  - {path: /.well-known/agent.json, status: 302, served: false}
+  - {path: /llms.txt, status: 302, served: false}
+  - {path: /openapi.json, status: 302, served: false}
+  - {path: /swagger.json, status: 302, served: false}
+  - {path: /api-docs, status: 302, served: false}
+  - {path: /docs, status: 302, served: false}
+
+- host: https://publisher.inmobi.com
+  role: Ad Management API host
+  edge_behaviour: 302 with a 34-byte text/plain body for unrouted paths
+  documents:
+  - {path: /.well-known/security.txt, status: 302, served: false}
+  - {path: /.well-known/openid-configuration, status: 302, served: false}
+  - {path: /.well-known/oauth-authorization-server, status: 302, served: false}
+  - {path: /.well-known/oauth-protected-resource, status: 302, served: false}
+  - {path: /.well-known/api-catalog, status: 302, served: false}
+  - {path: /.well-known/ai-plugin.json, status: 302, served: false}
+  - {path: /.well-known/agent-card.json, status: 302, served: false}
+  - {path: /.well-known/agent.json, status: 302, served: false}
+  - {path: /llms.txt, status: 302, served: false}
+
+- host: https://api.cdr.inmobi.com
+  role: DSP Cost API host
+  edge_behaviour: blanket 403 on every path outside /api/v3
+  documents:
+  - {path: /.well-known/security.txt, status: 403, served: false}
+  - {path: /.well-known/agent-card.json, status: 403, served: false}
+  - {path: /openapi.json, status: 403, served: false}
+  - {path: /swagger.json, status: 403, served: false}
+  - {path: /api-docs, status: 403, served: false}
+  - {path: /llms.txt, status: 403, served: false}
+
 - host: https://www.inmobi.com
+  role: corporate site
+  edge_behaviour: 404 with a 27KB HTML body
   documents:
-  - path: /.well-known/security.txt
-    status: 404
-  - path: /.well-known/openid-configuration
-    status: 404
-  - path: /.well-known/oauth-authorization-server
-    status: 404
-  - path: /.well-known/api-catalog
-    status: 404
-  - path: /.well-known/ai-plugin.json
-    status: 404
+  - {path: /.well-known/security.txt, status: 404, served: false}
+  - {path: /.well-known/openid-configuration, status: 404, served: false}
+  - {path: /.well-known/oauth-authorization-server, status: 404, served: false}
+  - {path: /.well-known/oauth-protected-resource, status: 404, served: false}
+  - {path: /.well-known/api-catalog, status: 404, served: false}
+  - {path: /.well-known/ai-plugin.json, status: 404, served: false}
+  - {path: /.well-known/agent-card.json, status: 404, served: false}
+  - {path: /.well-known/agent.json, status: 404, served: false}
+  - {path: /llms.txt, status: 404, served: false}
+  - {path: /openapi.json, status: 404, served: false}
+
 - host: https://support.inmobi.com
+  role: documentation host
+  edge_behaviour: 404 with a ~51KB HTML body
   documents:
-  - path: /.well-known/security.txt
-    status: 404
-  - path: /.well-known/openid-configuration
-    status: 404
-  - path: /.well-known/oauth-authorization-server
-    status: 404
-  - path: /.well-known/api-catalog
-    status: 404
-  - path: /.well-known/ai-plugin.json
-    status: 404
+  - {path: /.well-known/security.txt, status: 404, served: false}
+  - {path: /.well-known/openid-configuration, status: 404, served: false}
+  - {path: /.well-known/oauth-authorization-server, status: 404, served: false}
+  - {path: /.well-known/oauth-protected-resource, status: 404, served: false}
+  - {path: /.well-known/api-catalog, status: 404, served: false}
+  - {path: /.well-known/ai-plugin.json, status: 404, served: false}
+  - {path: /.well-known/agent-card.json, status: 404, served: false}
+  - {path: /.well-known/agent.json, status: 404, served: false}
+  - {path: /llms.txt, status: 404, served: false}
+  - {path: /openapi.json, status: 404, served: false}
+
+- host: https://advertising.inmobi.com
+  role: advertiser marketing site
+  edge_behaviour: 404 with an 11KB HTML body
+  documents:
+  - {path: /.well-known/security.txt, status: 404, served: false}
+  - {path: /.well-known/openid-configuration, status: 404, served: false}
+  - {path: /.well-known/oauth-authorization-server, status: 404, served: false}
+  - {path: /.well-known/oauth-protected-resource, status: 404, served: false}
+  - {path: /.well-known/api-catalog, status: 404, served: false}
+  - {path: /.well-known/ai-plugin.json, status: 404, served: false}
+  - {path: /.well-known/agent-card.json, status: 404, served: false}
+  - {path: /.well-known/agent.json, status: 404, served: false}
+  - {path: /llms.txt, status: 404, served: false}

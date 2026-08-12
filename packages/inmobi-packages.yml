@@ -1,40 +1,146 @@
-generated: '2026-07-19'
+generated: '2026-08-12'
 method: searched
 source: >-
   https://support.inmobi.com/monetize/android-guidelines/ ,
-  https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads ,
+  https://repo1.maven.org/maven2/com/inmobi/monetization/ ,
   https://cocoapods.org/pods/InMobiSDK ,
-  https://github.com/InMobi/InMobiSDK-Swift-Package
+  https://github.com/InMobi/InMobiSDK-Swift-Package ,
+  https://github.com/InMobi/api-monetization
 notes: >-
-  InMobi distributes native mobile ad SDKs rather than a public REST API client
-  library. The Android SDK ships on Maven Central; the iOS SDK ships on CocoaPods
-  and Swift Package Manager. There is no first-party JavaScript/Python/Go client
-  because InMobi's server surface is OpenRTB (InMobi Exchange) and dashboard-based.
+  InMobi distributes native mobile ad SDKs, not REST API client libraries. The
+  Android SDK ships on Maven Central; the iOS SDK ships on CocoaPods and Swift
+  Package Manager. There is NO first-party client library for any of InMobi's
+  four REST APIs (Publisher Reporting, Ad Management, DSP Cost,
+  Server-to-Server Ad Request) in any language — callers hand-roll HTTP. Nothing
+  is published to npm, PyPI, RubyGems, NuGet, crates.io or pkg.go.dev (all
+  probed 404 on 2026-08-12).
+  CURRENCY: the two flagship ad SDKs are current and shipping in lockstep
+  (Android 11.4.0 on 2026-07-08, iOS 11.4.1 on 2026-08-05). The decay is in the
+  older layer — the legacy Java artifact stopped at 10.1.4 in Sept 2023, and the
+  only first-party SERVER-side library InMobi ever published,
+  github.com/InMobi/api-monetization, has not been pushed since Feb 2016.
+registry_probes:
+  npm: {queried: [inmobi, '@inmobi/cmp', inmobi-sdk], result: 404, checked: '2026-08-12'}
+  pypi: {queried: [inmobi], result: 404, checked: '2026-08-12'}
+sdk_count: 8
+official_sdk_count: 8
+rest_client_count: 0
+
 packages:
 - language: kotlin
   registry: maven
   name: com.inmobi.monetization:inmobi-ads-kotlin
   version: 11.4.0
+  published: '2026-07-08'
   url: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads-kotlin
   install: "implementation 'com.inmobi.monetization:inmobi-ads-kotlin:11.4.0'"
   official: true
+  status: current
+  note: >-
+    The current InMobi Android ad SDK. Version and date read from
+    https://repo1.maven.org/maven2/com/inmobi/monetization/inmobi-ads-kotlin/maven-metadata.xml
+    (lastUpdated 20260708) and confirmed against the documented Gradle line on
+    support.inmobi.com/monetize/android-guidelines/.
+
+- language: swift
+  registry: swift-package-manager
+  name: InMobiSDK-Swift-Package
+  version: 11.4.1
+  published: '2026-08-05'
+  url: https://github.com/InMobi/InMobiSDK-Swift-Package
+  install: "https://github.com/InMobi/InMobiSDK-Swift-Package.git"
+  official: true
+  status: current
+  note: Version and date read from the GitHub release tag 11.4.1 published 2026-08-05.
+
+- language: swift
+  registry: cocoapods
+  name: InMobiSDK
+  version: 11.4.1
+  published: '2026-08'
+  url: https://cocoapods.org/pods/InMobiSDK
+  install: "pod 'InMobiSDK', '~> 11.4'"
+  official: true
+  status: current
+  note: >-
+    cocoapods.org shows 11.4.1, last released Aug 2026. NOTE a registry
+    discrepancy worth knowing about: the CocoaPods TRUNK API
+    (trunk.cocoapods.org/api/v1/pods/InMobiSDK) still tops out at 9.2.1 dated
+    2021-08-19 across 87 versions — InMobi appears to publish current podspecs
+    through the Specs repo rather than trunk, so trunk metadata is stale by five
+    years and any tool reading trunk will report the wrong version. Exact day of
+    the 11.4.1 podspec is not exposed, hence a month-precision `published`.
+
+- language: kotlin
+  registry: maven
+  name: com.inmobi.monetization:inmobi-prebid-adapter
+  version: 10.8.2.0
+  published: '2025-03-27'
+  url: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-prebid-adapter
+  official: true
+  status: trailing
+  note: Prebid mediation adapter; trails the main SDK by a full major version.
+
+- language: kotlin
+  registry: maven
+  name: com.inmobi.monetization:inmobi-ironsource-custom-adapter
+  version: 10.8.2.0
+  published: '2025-03-17'
+  url: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ironsource-custom-adapter
+  official: true
+  status: trailing
+
+- language: kotlin
+  registry: maven
+  name: com.inmobi.monetization:inmobi-applovin-custom-adapter
+  version: 10.8.0.0
+  published: '2024-11-18'
+  url: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-applovin-custom-adapter
+  official: true
+  status: trailing
+
 - language: java
   registry: maven
   name: com.inmobi.monetization:inmobi-ads
   version: 10.1.4
+  published: '2023-09-06'
   url: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads
   install: "implementation 'com.inmobi.monetization:inmobi-ads:10.1.4'"
   official: true
-- language: swift
-  registry: cocoapods
-  name: InMobiSDK
-  version: 11.4.0
-  url: https://cocoapods.org/pods/InMobiSDK
-  install: "pod 'InMobiSDK', '~> 11.4'"
+  status: superseded
+  note: >-
+    Legacy Java artifact, superseded by inmobi-ads-kotlin. Last publish
+    2023-09-06 per Maven Central metadata (lastUpdated 20230906). Still
+    resolvable, so integrators can and do pin a three-year-old SDK.
+
+- language: multi
+  registry: source
+  name: InMobi/api-monetization
+  version: null
+  published: '2016-02-04'
+  url: https://github.com/InMobi/api-monetization
   official: true
-- language: swift
-  registry: swift-package-manager
-  name: InMobiSDK-Swift-Package
-  url: https://github.com/InMobi/InMobiSDK-Swift-Package
-  install: "https://github.com/InMobi/InMobiSDK-Swift-Package.git"
-  official: true
+  status: abandoned
+  languages: [java, python, php, nodejs, ruby, objective-c, android]
+  note: >-
+    The only first-party SERVER-side client library InMobi has published — a
+    seven-language wrapper for "API 2.0" ad requests to InMobi servers. Never
+    released to any package registry, so `version: null` is the honest value:
+    there is no registry metadata endpoint to query and no tag to read. Last
+    push 2016-02-04, ten years stale, and it targets an ad-request API version
+    two majors behind the current Server-to-Server API 3.1 at
+    https://api.w.inmobi.com/showad/v3.1. Recorded because its existence and its
+    staleness are both findings.
+
+related_repositories:
+- {name: InMobiCMP-Swift-Package, url: 'https://github.com/InMobi/InMobiCMP-Swift-Package', updated: '2026-05-06', note: 'InMobi CMP (Choice) iOS distribution; no release tags published'}
+- {name: sdk-sample-code-android, url: 'https://github.com/InMobi/sdk-sample-code-android', updated: '2026-03-18'}
+- {name: sdk-sample-code-ios, url: 'https://github.com/InMobi/sdk-sample-code-ios', updated: '2025-12-08'}
+- {name: InMobiCMP-Demo-iOS, url: 'https://github.com/InMobi/InMobiCMP-Demo-iOS', updated: '2025-03-17'}
+- {name: InMobiCMP-GTM-Template, url: 'https://github.com/InMobi/InMobiCMP-GTM-Template', updated: '2024-10-30'}
+
+gaps:
+- no REST API client library in any language for any of the four documented InMobi APIs
+- no package on npm, PyPI, RubyGems, NuGet, crates.io or pkg.go.dev
+- the only server-side library ever shipped has been unmaintained since 2016
+- mediation adapters trail the core SDK by a full major version
