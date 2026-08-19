@@ -40,7 +40,7 @@ accessModel:
     four REST APIs, is enterprise-direct with no published rate card and API
     access is an entitlement of an approved publisher or DSP account.
 image: https://github.com/InMobi.png
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-07-17'
 modified: '2026-08-12'
 tags:
