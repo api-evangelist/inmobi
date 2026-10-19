@@ -1,8 +1,15 @@
 generated: '2026-10-14'
 method: searched
 checked:
+- https://api.nuget.org/v3
+- https://crates.io/api/v1
 - https://docs.mparticle.com/integrations/inmobi/audience/
 - https://hightouch.com/docs/destinations/inmobi
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
 - https://vendor-list.consensu.org/v3/vendor-list.json
 marketplace_apps: []
 edges:
@@ -89,6 +96,63 @@ edges:
     detected: '2026-10-14'
   detected_by: sweep-adtech.py
   detected: '2026-10-14'
+- partner_name: Maven Central
+  partner: maven-central
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Java/JVM)
+  evidence: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Maven Central (public registry JSON)
+    spec_file: null
+    language: Java/JVM
+    packages:
+    - name: com.inmobi.monetization:inmobi-ads
+      version: 10.1.4
+      released: '2023-09-06'
+      released_field: lastUpdated
+      lapsed: true
+      page: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads
+      repo_leg: domain:inmobi.com
+      publisher_leg: groupId:inmobi.com
+      matched_by: domain
+    - name: com.inmobi.monetization:inmobi-ads-kotlin
+      version: 11.5.0
+      released: '2026-09-30'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ads-kotlin
+      repo_leg: github-org:inmobi
+      publisher_leg: groupId:inmobi.com
+      matched_by: domain
+    - name: com.inmobi.monetization:inmobi-applovin-custom-adapter
+      version: 11.2.0.1
+      released: '2026-04-17'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-applovin-custom-adapter
+      repo_leg: domain:inmobi.com
+      publisher_leg: groupId:inmobi.com
+      matched_by: domain
+    - name: com.inmobi.monetization:inmobi-ironsource-custom-adapter
+      version: 11.2.0.0
+      released: '2026-04-22'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.inmobi.monetization/inmobi-ironsource-custom-adapter
+      repo_leg: domain:inmobi.com
+      publisher_leg: groupId:inmobi.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 source:
 - https://docs.mparticle.com/integrations/inmobi/audience/
 - https://hightouch.com/docs/destinations/inmobi
