@@ -126,3 +126,86 @@
   relationship: connector-coverage
   status: not-a-workflow
   arazzo: null
+- slug: inmobi-cocoapods-trunk
+  label: CocoaPods trunk
+  partner_name: CocoaPods trunk
+  category: iOS SDK (CocoaPods)
+  type: register
+  channel: package-registry
+  evidence: https://cocoapods.org/pods/InMobiABAdMobDFPPlugin
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: CocoaPods trunk (cdn.cocoapods.org Specs; github.com/CocoaPods/Specs)
+    spec_file: null
+    role: cocoapods-publisher
+    registered_name: InMobi
+    matched_domain: inmobi.com
+    matched_by: domain
+    pods:
+    - pod: InMobiABAdMobDFPPlugin
+      version: 1.0.3.907
+      homepage: https://www.inmobi.com
+      deprecated: false
+    - pod: InMobiABMoPubPlugin
+      version: 1.0.5.907
+      homepage: https://www.inmobi.com
+      deprecated: false
+    - pod: InMobiAdMobPlugin
+      version: 9.0.7
+      homepage: https://www.inmobi.com
+      deprecated: false
+    - pod: InMobiApplovinAdapterContainer
+      version: 1.0.2
+      homepage: http://www.inmobi.com/sdk
+      deprecated: false
+    - pod: InMobiCMP
+      version: 2.4.2
+      homepage: https://support.inmobi.com/choice/choice-overview/what-is-a-cmp
+      deprecated: false
+    - pod: InMobiGAMAdapterContainer
+      version: 1.0.1
+      homepage: http://www.inmobi.com/sdk
+      deprecated: false
+    - pod: InMobiInternalSanitySDK-Swift
+      version: 10.8.8
+      homepage: https://www.inmobi.com
+      deprecated: false
+    - pod: InMobiMediationSDK
+      version: 10.1.4
+      homepage: http://www.inmobi.com/sdk
+      deprecated: false
+    - pod: InMobiMoPubPlugin
+      version: 9.1.5.0
+      homepage: https://www.inmobi.com
+      deprecated: false
+    - pod: InMobiSDK
+      version: 11.5.0
+      homepage: http://www.inmobi.com/sdk
+      deprecated: false
+    - pod: InMobiSDK-Swift
+      version: 10.7.8-beta
+      homepage: https://www.inmobi.com
+      deprecated: false
+    - pod: InMobiSDK-lu
+      version: 4.4.1
+      homepage: https://www.inmobi.com
+      deprecated: false
+    signal_note: latest podspec homepage (domain) + authors (name); pods, versions and counts are context
+    detected_by: sweep-mobile-sdk-index.py
+    detected: '2026-10-21'
+  status: not-a-workflow
+  arazzo: null
+- slug: inmobi-google-play-developer-google-play-sdk-index
+  label: Google Play Developer (Google Play SDK Index)
+  partner: google-play
+  partner_name: Google Play Developer (Google Play SDK Index)
+  category: mobile SDK (ads)
+  type: marketplace
+  marketplace: Google Play SDK Index
+  channel: partner-built
+  evidence: https://play.google.com/sdks/details/com-inmobi-omsdk-inmobi-omsdk
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
