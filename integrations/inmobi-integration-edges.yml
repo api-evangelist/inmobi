@@ -17,6 +17,10 @@ checked:
 - https://play.google.com/sdks
 - https://search.maven.org/solrsearch/select
 - google-play/integrations/google-play-integration-edges.yml
+- https://hubgloo.opxar.com/search
+- https://www.tagtoday.net/certifications
+- https://www.tagtoday.net/registry
+- https://www.tagtoday.net/registry-search/
 marketplace_apps: []
 edges:
 - partner_name: IAB Europe TCF Global Vendor List
@@ -250,6 +254,69 @@ edges:
   category: mobile SDK (ads)
   publisher_verified:
   - Registered in Google Play SDK Console
+- partner_name: TAG Registry (Trustworthy Accountability Group)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://www.tagtoday.net/registry
+  category: Ad fraud / brand safety certification (TAG)
+  contract_reference:
+    register: TAG Registry (tagtoday.net/registry; registry-search public endpoint)
+    spec_file: null
+    standard: TAG certification programs (Trustworthy Accountability Group)
+    role: tag-certified
+    registrations:
+    - registered_name: InMobi
+      register_id: https://hubgloo.opxar.com/company/52706788196
+      verified_by_tag: true
+      seals:
+      - Brand Safety Certified
+      - Certified Against Malvertising
+      - Certified Against Fraud
+      matched_domain: inmobi.com
+      matched_by: domain
+      identity: wikidata Q6008783 'InMobi' P856 https://www.inmobi.com
+    signal_note: certified_products = one entry per TAG seal held (CAF, BSC, CAM, CAP, CFT), never per registration;
+      validation route (third-party auditor / TAG Validation / self-attestation) and category are context. The registry
+      shows current seals only and marks none expired, so lapsed is false. Verified by TAG with no seal = listing
+      only (participation)
+    detected_by: sweep-tag-certified-ad-fraud.py
+    detected: '2026-10-23'
+    certified_products:
+    - product: Brand Safety Certified
+      product_type: Brand Safety Certified
+      standard: TAG Brand Safety Certified (BSC)
+      lapsed: false
+      validation:
+      - third-party auditor
+      categories:
+      - Intermediary
+      scope:
+      - the company’s global operations
+    - product: Certified Against Fraud
+      product_type: Certified Against Fraud
+      standard: TAG Certified Against Fraud (CAF)
+      lapsed: false
+      validation:
+      - third-party auditor
+      categories:
+      - Intermediary
+      scope: []
+    - product: Certified Against Malvertising
+      product_type: Certified Against Malvertising
+      standard: TAG Certified Against Malvertising (CAM)
+      lapsed: false
+      validation:
+      - third-party auditor
+      categories:
+      - Intermediary
+      scope: []
+    identity_source: wikidata P856 (labelled provenance step; Kin 2026-10-15 decision 1)
+  detected_by: sweep-tag-certified-ad-fraud.py
+  first_seen: '2026-10-23'
 source:
 - https://docs.mparticle.com/integrations/inmobi/audience/
 - https://hightouch.com/docs/destinations/inmobi
