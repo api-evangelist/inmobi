@@ -64,6 +64,116 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-InMobi is a company surfaced as a portfolio company of softbank-vision-fund and added to the API Evangelist network as a stub for enrichment. Sector: enterprise. This profile is a lead awaiting the enrichment pipeline.
+InMobi is a global advertising technology and mobile marketing platform headquartered in Bengaluru, India, and backed by SoftBank Vision Fund. It positions itself as the intelligence layer of the consumer internet, connecting brands and consumers across mobile apps and the open web. InMobi's enterprise platforms include InMobi Advertising for brand building, app growth and ad monetization; the InMobi Exchange, a programmatic OpenRTB 2.5 ad exchange for demand-side platforms; InMobi DSP performance solutions; and InMobi CMP (Choice), an IAB TCF-certified consent management platform. InMobi operates four documented, live REST APIs — the Publisher Reporting API 3.0 for inventory performance data, the Ad Management API for managing apps and placements, the DSP Cost API for asynchronous spend reporting, and a Server-to-Server Ad Request API — alongside native mobile ad SDKs for Android (Maven Central) and iOS (CocoaPods and Swift Package Manager). No OpenAPI, AsyncAPI, OAuth server or REST client library is published for any of them. Consumer brands include Glance and the 1Weather app.
 
-Backed by: softbank-vision-fund
+**Areas:** Company · Enterprise · Advertising · AdTech · Mobile · Monetization · Programmatic · OpenRTB · SDK · Consent Management · DSP · Reporting
+
+## InMobi on APIs.io
+
+Everything profiled for InMobi is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/inmobi/](https://apis.io/providers/inmobi/)** — or go straight to one of the APIs or properties below.
+
+### APIs (5)
+
+- [InMobi Publisher Reporting API](https://apis.io/apis/inmobi/inmobi-publisher-reporting-api/) — Automates download of app inventory performance data for InMobi publishers. A single POST to /v3.0/reporting/publisher takes a reportRequest envelope of…
+- [InMobi Ad Management API](https://apis.io/apis/inmobi/inmobi-ad-management-api/) — Manages InMobi monetization inventory — the apps and placements a publisher monetizes through InMobi — without clicking through the dashboard. Apps are…
+- [InMobi DSP Cost API](https://apis.io/apis/inmobi/inmobi-dsp-cost-api/) — Asynchronous spend reporting for InMobi DSP advertisers. A bearer token is minted from clientId/clientSecret at POST /auth/token (8-hour validity), then a…
+- [InMobi Server-to-Server Ad Request API](https://apis.io/apis/inmobi/inmobi-server-to-server-ad-request-api/) — Lets a publisher request InMobi ads from its own servers rather than through the client SDK, using the InMobi ad-request/ad-response contract at…
+- [InMobi Exchange (OpenRTB 2.5)](https://apis.io/apis/inmobi/inmobi-exchange-openrtb/) — InMobi's programmatic ad exchange, integrated by demand-side platforms over the IAB OpenRTB 2.5 protocol. InMobi publishes its own delta specification…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Inmobi Authentication](https://apis.io/security/inmobi/inmobi-authentication/)
+- [Inmobi Domain Security](https://apis.io/security/inmobi/inmobi-domain-security/)
+- [Inmobi Trust Center](https://apis.io/security/inmobi/inmobi-trust-center/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Inmobi Plans Pricing](https://apis.io/plans/inmobi/inmobi-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Inmobi Rate Limits](https://apis.io/rate-limits/inmobi/inmobi-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.inmobi.com/)
+- [Documentation](https://support.inmobi.com/monetize)
+- [Getting started](https://support.inmobi.com/monetize)
+- [API reference](https://support.inmobi.com/monetize/inmobi-apis)
+- [Pricing](https://support.inmobi.com/choice/getting-started-cmp/inmobi-cmp-premium)
+- [Sign up](https://publisher.inmobi.com/signup)
+- [Support](https://support.inmobi.com/)
+- [Changelog](https://support.inmobi.com/inmobi-now)
+- [Blog](https://www.inmobi.com/blog)
+- [Security](https://www.inmobi.com/security/)
+- [Compliance](https://www.inmobi.com/trust-center/)
+- [Terms of service](https://www.inmobi.com/terms-of-service)
+- [Privacy policy](https://www.inmobi.com/website-privacy-policy/)
+- [GitHub](https://github.com/InMobi)
+
+## API Evangelist rating
+
+**Kin Score 48.3** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 69.6 |
+| Contract quality | 5.3 |
+| Contract governance | 18.2 |
+| Operational transparency | 60.5 |
+| Developer ergonomics | 64.3 |
+| Access clarity | 75.0 |
+
+**Agent readiness 7.9** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 29.4** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/inmobi/](https://apis.io/providers/inmobi/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for InMobi: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/inmobi/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
